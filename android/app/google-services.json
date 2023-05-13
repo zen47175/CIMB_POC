@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1067301138266",
+    "project_id": "cimb-poc",
+    "storage_bucket": "cimb-poc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1067301138266:android:5f774418be5b3bd7f64d63",
+        "android_client_info": {
+          "package_name": "com.example.poc_cimb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1067301138266-2i66nnpkk9b0uecfncfkbg945rddovg6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU0rYtSNDVwzl26aSICBJ3S27jVsmKqNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1067301138266-2i66nnpkk9b0uecfncfkbg945rddovg6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
