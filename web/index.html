@@ -14,6 +14,26 @@
     This is a placeholder for base href that will be replaced by the value of
     the `--base-href` argument provided to `flutter build`.
   -->
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"></script>
+<script>
+  // Your Firebase configuration object
+  var firebaseConfig = {
+  apiKey: "AIzaSyDjZp-4DfF08pJ109-1YE86Jvo4MTx1tl8",
+  authDomain: "cimb-poc.firebaseapp.com",
+  projectId: "cimb-poc",
+  storageBucket: "cimb-poc.appspot.com",
+  messagingSenderId: "1067301138266",
+  appId: "1:1067301138266:web:3dc79a6ebbbb3cb0f64d63",
+  measurementId: "G-RPN3X6VRR3"
+  };
+  
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
+
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">

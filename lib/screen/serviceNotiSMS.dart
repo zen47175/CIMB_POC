@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:poc_cimb/screen/smsCardSettingScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:poc_cimb/widget/customField.dart';
 import 'package:poc_cimb/widget/mainTitle.dart';
+import 'package:get/get.dart';
 
 class ServiceNotiSMS extends StatefulWidget {
   ServiceNotiSMS({Key? key}) : super(key: key);
@@ -13,6 +17,70 @@ class ServiceNotiSMS extends StatefulWidget {
 class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
   int _value = 1;
   TextEditingController _controller = TextEditingController();
+  TextEditingController _secondController = TextEditingController();
+  FocusNode _secondFocusNode = FocusNode();
+  bool _showNewFormField = false;
+  String correctPinCode = '12345';
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() async {
+      if (_controller.text.length == 4) {
+        EasyLoading.show(status: 'Checking number...');
+        await Future.delayed(Duration(seconds: 1)); // wait for 1 second
+        EasyLoading.dismiss();
+        setState(() {
+          _showNewFormField = true;
+        });
+        FocusScope.of(context).requestFocus(
+            _secondFocusNode); // automatically focus on the new field
+      } else {
+        setState(() {
+          _showNewFormField = false;
+        });
+      }
+    });
+
+    _secondController.addListener(() async {
+      if (_secondController.text.length == 4) {
+        EasyLoading.show(status: 'Validating pin code...');
+        await Future.delayed(Duration(seconds: 1)); // wait for 1 second
+        EasyLoading.dismiss();
+
+        if (_secondController.text != correctPinCode) {
+          Get.snackbar('Correct', "Your pincode is correct",
+              snackPosition: SnackPosition.BOTTOM,
+              duration: const Duration(seconds: 3),
+              backgroundColor: Colors.green,
+              margin: const EdgeInsets.all(16),
+              isDismissible: true,
+              colorText: Colors.white,
+              maxWidth: Get.width * 0.9);
+
+          // Navigate to next page
+          Get.to(() =>
+              SmsCardSettingScreen()); // replace NextPage with your next page
+        } else {
+          Get.snackbar('Incorrect', "Your pincode is incorrect",
+              snackPosition: SnackPosition.BOTTOM,
+              duration: const Duration(seconds: 3),
+              backgroundColor: Colors.red,
+              margin: const EdgeInsets.all(16),
+              isDismissible: true,
+              colorText: Colors.white,
+              maxWidth: Get.width * 0.9);
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _secondController.dispose();
+    _secondFocusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +96,8 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
             ),
             SizedBox(height: 23),
             ListView(
-              shrinkWrap:
-                  true, // allows the ListView to size itself based on children's height
-              physics:
-                  NeverScrollableScrollPhysics(), // to disable ListView's scrolling
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
                 RadioListTile(
                   title: const Text('บัตรเครดิต'),
@@ -49,6 +115,13 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
                     child: CustomFormField(
                       hintText: 'กรุณากรอกเลขบัตรเครดิต 4 ตัวท้ายของคุณ',
                       controller: _controller,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        LengthLimitingTextInputFormatter(
+                            4), // limit input to 4 digits
+                        FilteringTextInputFormatter
+                            .digitsOnly, // allow only digits
+                      ],
                     ),
                   ),
                 RadioListTile(
@@ -65,8 +138,22 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 44),
                     child: CustomFormField(
-                      hintText: 'กรุณากรอกเลขบัตรเครดิต 4 ตัวท้ายของคุณ',
+                      hintText: 'กรุณากรอกเลขบัญชี 4 ตัวท้ายของคุณ',
                       controller: _controller,
+                    ),
+                  ),
+                if (_showNewFormField)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 44),
+                    child: CustomFormField(
+                      hintText: 'กรุณาใส่รหัสของคุณ',
+                      controller: _secondController,
+                      focusNode: _secondFocusNode,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(4)
+                      ],
                     ),
                   ),
               ],

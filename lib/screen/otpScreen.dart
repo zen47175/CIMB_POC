@@ -6,10 +6,36 @@ import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:pinput/pinput.dart';
 import 'package:get/get.dart';
 
-class OtpScreen extends StatelessWidget {
+class OtpScreen extends StatefulWidget {
+  @override
+  State<OtpScreen> createState() => _OtpScreenState();
+}
+
+class _OtpScreenState extends State<OtpScreen> {
   final pinController = TextEditingController();
+
   final focusNode = FocusNode();
+
   final formKey = GlobalKey<FormState>();
+
+  bool _isButtonDisabled = true;
+  @override
+  void initState() {
+    super.initState();
+
+    pinController.addListener(() {
+      if (pinController.text.length == 6) {
+        // assuming OTP length is 6
+        setState(() {
+          _isButtonDisabled = false;
+        });
+      } else {
+        setState(() {
+          _isButtonDisabled = true;
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,30 +59,30 @@ class OtpScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(
+            const Text(
               'ขอระบุ otp เพื่อยินยันตัวตน',
               style: TextStyle(fontSize: 20),
             ),
-            SizedBox(height: 10),
-            Text(
+            const SizedBox(height: 10),
+            const Text(
               'รหัส otp 6 หลักถูกส่งไปที่',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(height: 5),
-            Text(
+            const SizedBox(height: 5),
+            const Text(
               'abcdfeg@gmail.com',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 5),
-            Text(
+            const SizedBox(height: 5),
+            const Text(
               'รหัสมีอายุการใช้งาน x นาที',
               style: TextStyle(fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 42,
             ),
             Form(
@@ -102,7 +128,7 @@ class OtpScreen extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 60,
             ),
             Center(
@@ -112,25 +138,28 @@ class OtpScreen extends StatelessWidget {
                   fontWeight: FontWeight.w500,
                   color: Colors.grey.withOpacity(0.5)),
             )),
-            SizedBox(
+            const SizedBox(
               height: 24,
             ),
             ElevatedButton(
-              onPressed: () {
-                Get.to(() => AgreementAndPolicy());
-              },
+              onPressed: _isButtonDisabled
+                  ? null
+                  : () {
+                      // change this
+                      Get.to(() => AgreementAndPolicy());
+                    },
               style: ElevatedButton.styleFrom(
-                primary: Color(0xFF790009),
+                primary: const Color(0xFF790009),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(45),
                 ),
                 padding:
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               ),
-              child: SizedBox(
+              child: const SizedBox(
                 width: 342,
                 height: 28,
-                child: const Center(
+                child: Center(
                   child: Text(
                     'ยืนยัน',
                     style: TextStyle(

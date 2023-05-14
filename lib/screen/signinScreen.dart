@@ -111,6 +111,7 @@ class _SigninScreenState extends State<SigninScreen> {
                       onPressed: _isValidInput
                           ? () {
                               Get.to((() => OtpScreen()));
+                              print('test');
                             }
                           : null, // The button is disabled when _isValidInput is false
                       style: ElevatedButton.styleFrom(
