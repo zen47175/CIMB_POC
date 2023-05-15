@@ -57,7 +57,6 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
               colorText: Colors.white,
               maxWidth: Get.width * 0.9);
 
-          // Navigate to next page
           Get.to(() =>
               SmsCardSettingScreen()); // replace NextPage with your next page
         } else {
