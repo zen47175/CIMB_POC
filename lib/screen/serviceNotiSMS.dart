@@ -50,7 +50,7 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
         if (_secondController.text != correctPinCode) {
           Get.snackbar('Correct', "Your pincode is correct",
               snackPosition: SnackPosition.BOTTOM,
-              duration: const Duration(seconds: 3),
+              duration: const Duration(seconds: 2),
               backgroundColor: Colors.green,
               margin: const EdgeInsets.all(16),
               isDismissible: true,
