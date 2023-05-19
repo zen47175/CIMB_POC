@@ -1,12 +1,20 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
+import 'package:pinput/pinput.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:poc_cimb/screen/agreementAndPolicyScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
-import 'package:pinput/pinput.dart';
-import 'package:get/get.dart';
 
 class OtpScreen extends StatefulWidget {
+  final String verificationId;
+  const OtpScreen({
+    Key? key,
+    required this.verificationId,
+  }) : super(key: key);
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
@@ -19,6 +27,7 @@ class _OtpScreenState extends State<OtpScreen> {
   final formKey = GlobalKey<FormState>();
 
   bool _isButtonDisabled = true;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +44,24 @@ class _OtpScreenState extends State<OtpScreen> {
         });
       }
     });
+  }
+
+  void _verifyOtp() async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: widget.verificationId,
+      smsCode: pinController.text,
+    );
+
+    try {
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      // Go to the next screen if the OTP is verified
+      Get.to(() => AgreementAndPolicy());
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-verification-code') {
+        print('The provided verification code is invalid.');
+        // Show some error message
+      }
+    }
   }
 
   @override
@@ -145,7 +172,7 @@ class _OtpScreenState extends State<OtpScreen> {
               onPressed: _isButtonDisabled
                   ? null
                   : () {
-                      // change this
+                      _verifyOtp();
                       Get.to(() => AgreementAndPolicy());
                     },
               style: ElevatedButton.styleFrom(

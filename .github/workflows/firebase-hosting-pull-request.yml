@@ -22,3 +22,43 @@ jobs:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CIMB_POC }}'
           projectId: cimb-poc
+
+
+
+# Users
+# ├── idcitizen1234
+# │   ├── password: "hashedPassword"
+# │   ├── pincode: "123456"
+# │   ├── lineUID: "LineUser123"
+# │   ├── notificationCenter: true
+# │   └── UserProducts
+# │       ├── autoID1
+# │       │   ├── productName: "product1"
+# │       │   ├── productDetails: "This is product1."
+# │       │   └── productNotifications: true
+# │       └── autoID2
+# │           ├── productName: "product2"
+# │           ├── productDetails: "This is product2."
+# │           └── productNotifications: false
+# └── idcitizen5678
+#     ├── password: "hashedPassword"
+#     ├── pincode: "789012"
+#     ├── lineUID: "LineUser456"
+#     ├── notificationCenter: false
+#     └── UserProducts
+#         ├── autoID3
+#         │   ├── productName: "product3"
+#         │   ├── productDetails: "This is product3."
+#         │   └── productNotifications: true
+#         └── autoID4
+#             ├── productName: "product4"
+#             ├── productDetails: "This is product4."
+#             └── productNotifications: false
+
+# UIDMapping
+# ├── autoID1
+# │   ├── LineUID: "LineUser123"
+# │   └── idcitizen: "idcitizen1234"
+# └── autoID2
+#     ├── LineUID: "LineUser456"
+#     └── idcitizen: "idcitizen5678"
