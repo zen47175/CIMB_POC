@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:poc_cimb/screen/confirmScreen.dart';
+import 'package:poc_cimb/widget/checklistCreditCard.dart';
+import 'package:poc_cimb/widget/creditcard.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:poc_cimb/widget/customButtombar.dart';
 import 'package:poc_cimb/widget/mainTitle.dart';
@@ -25,6 +27,9 @@ class AddNewCard extends StatelessWidget {
               text: 'เพิ่มผลิตภัณฑ์เพื่อเริ่มต้นการใช้งาน',
               fontSize: 18,
             )),
+        const SizedBox(
+          height: 20,
+        ),
         const DecoratedBox(
           decoration: BoxDecoration(
             color: Color.fromRGBO(51, 55, 57, 0.1),
@@ -111,9 +116,15 @@ class AddNewCard extends StatelessWidget {
             ),
           ),
         ),
+        const CreditCard(
+          isToggle: false,
+        ),
+        CheckListCreditCard(
+          isSelectable: true,
+        )
       ]),
       bottomNavigationBar: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             boxShadow: [
               BoxShadow(
                 color: Color.fromRGBO(0, 0, 0, 0.25),

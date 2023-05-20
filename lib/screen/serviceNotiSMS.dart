@@ -141,6 +141,9 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
                       controller: _controller,
                     ),
                   ),
+                SizedBox(
+                  height: 40,
+                ),
                 if (_showNewFormField)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 44),

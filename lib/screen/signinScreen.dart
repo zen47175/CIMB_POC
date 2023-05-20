@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:poc_cimb/model/user.dart';
 import 'package:poc_cimb/screen/otpScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:poc_cimb/widget/customField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
@@ -17,6 +19,7 @@ class _SigninScreenState extends State<SigninScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   bool _isValidInput = false;
   @override
@@ -29,7 +32,7 @@ class _SigninScreenState extends State<SigninScreen> {
   void _validateInput() {
     setState(() {
       _isValidInput =
-          _idController.text.isNotEmpty && _phoneController.text.isNotEmpty;
+          _idController.text.length == 13 && _phoneController.text.length == 10;
     });
   }
 
@@ -122,37 +125,83 @@ class _SigninScreenState extends State<SigninScreen> {
                     const SizedBox(width: 12), // Space between the two buttons
                     ElevatedButton(
                       onPressed: _isValidInput
-                          ? () {
-                              _auth.verifyPhoneNumber(
-                                phoneNumber: '+66${_phoneController.text}',
-                                timeout: const Duration(seconds: 60),
-                                verificationCompleted:
-                                    (PhoneAuthCredential credential) async {
-                                  // This callback will be called when the verification is done automatically
-                                  await _auth.signInWithCredential(credential);
-                                  // Get.to(() => OtpScreen(verificationId: verificationId));
-                                },
-                                verificationFailed: (FirebaseAuthException e) {
-                                  if (e.code == 'invalid-phone-number') {
-                                    print(
-                                        'The provided phone number is not valid.');
-                                  }
-                                },
-                                codeSent:
-                                    (String verificationId, int? resendToken) {
-                                  // This callback will be called when the SMS is sent to the user's phone
-                                  Get.to(() => OtpScreen(
-                                      verificationId: verificationId));
-                                },
-                                codeAutoRetrievalTimeout:
-                                    (String verificationId) {},
-                              );
+                          ? () async {
+                              // Check if a user with the same id or phone already exists
+                              // final QuerySnapshot idResult = await _firestore
+                              //     .collection('Users')
+                              //     .where('id', isEqualTo: _idController.text)
+                              //     .get();
+
+                              // final QuerySnapshot phoneResult = await _firestore
+                              //     .collection('Users')
+                              //     .where('phone',
+                              //         isEqualTo: _phoneController.text)
+                              //     .get();
+
+                              // if (idResult.docs.isEmpty &&
+                              //     phoneResult.docs.isEmpty)
+                              //TODO don't for get to uncode check id
+                              if (_isValidInput) {
+                                // If no user exists with the id or phone, then create a new one
+                                final ConfirmationResult confirmationResult =
+                                    await _auth.signInWithPhoneNumber(
+                                        '+66${_phoneController.text}');
+
+                                Get.to(() => OtpScreen(
+                                    confirmationResult: confirmationResult));
+
+                                // Create new user instance
+                                AppUser newUser = AppUser(
+                                  id: _idController.text,
+                                  phone: _phoneController.text,
+                                  pincode: '',
+                                  lineUID: '',
+                                  notificationCenter: false,
+                                  userProducts: {
+                                    'autoID1': {
+                                      'productName':
+                                          'บัตรเครดิต CIMB Thai Credit Card',
+                                      'productDetails': '7733-38xx-xxxx-9080',
+                                      'productNotifications': false,
+                                    },
+                                    'autoID2': {
+                                      'productName':
+                                          'บัตรเดบิต CIMB Thai Debit Card (Banking Account)',
+                                      'productDetails': '7733-38xx-xxxx-2243',
+                                      'productNotifications': false,
+                                    },
+                                  },
+                                );
+                                await _firestore
+                                    .collection('Users')
+                                    .doc(newUser.id)
+                                    .set(newUser.toMap());
+                              } else {
+                                // If a user exists with either the id or phone, show a popup
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text('Error'),
+                                    content: const Text(
+                                        'A user with this ID or phone number already exists.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
                             }
                           : null,
                       style: ElevatedButton.styleFrom(
-                        primary:
+                        foregroundColor:
+                            _isValidInput ? Colors.white : Colors.black,
+                        backgroundColor:
                             _isValidInput ? Colors.black : Colors.grey[300],
-                        onPrimary: _isValidInput ? Colors.white : Colors.black,
                       ),
                       child: const Text('ขอรหัส otp'),
                     ),

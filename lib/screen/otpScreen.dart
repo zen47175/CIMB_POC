@@ -10,10 +10,10 @@ import 'package:poc_cimb/screen/agreementAndPolicyScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 
 class OtpScreen extends StatefulWidget {
-  final String verificationId;
+  final ConfirmationResult confirmationResult;
   const OtpScreen({
     Key? key,
-    required this.verificationId,
+    required this.confirmationResult,
   }) : super(key: key);
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -47,19 +47,34 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   void _verifyOtp() async {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: widget.verificationId,
-      smsCode: pinController.text,
-    );
-
     try {
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      // Go to the next screen if the OTP is verified
+      await widget.confirmationResult.confirm(pinController.text);
+      // If the OTP is verified, show Snackbar and then go to the next screen
+      Get.snackbar('Correct', "Your pincode is correct",
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2),
+          backgroundColor: Colors.green,
+          margin: const EdgeInsets.all(16),
+          isDismissible: true,
+          colorText: Colors.white,
+          maxWidth: Get.width * 0.9);
+
+      // Wait for 2 seconds before going to the next screen
+      await Future.delayed(Duration(seconds: 2));
+
       Get.to(() => AgreementAndPolicy());
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-verification-code') {
         print('The provided verification code is invalid.');
         // Show some error message
+        Get.snackbar('Incorrect', "The provided verification code is invalid.",
+            snackPosition: SnackPosition.BOTTOM,
+            duration: const Duration(seconds: 2),
+            backgroundColor: Colors.red,
+            margin: const EdgeInsets.all(16),
+            isDismissible: true,
+            colorText: Colors.white,
+            maxWidth: Get.width * 0.9);
       }
     }
   }
@@ -173,6 +188,7 @@ class _OtpScreenState extends State<OtpScreen> {
                   ? null
                   : () {
                       _verifyOtp();
+                      print(_verifyOtp);
                       Get.to(() => AgreementAndPolicy());
                     },
               style: ElevatedButton.styleFrom(

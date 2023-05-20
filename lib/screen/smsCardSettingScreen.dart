@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:poc_cimb/model/user.dart';
 import 'package:poc_cimb/screen/addNewCard.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:get/get.dart';
 import 'package:poc_cimb/widget/mainTitle.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SmsCardSettingScreen extends StatefulWidget {
   const SmsCardSettingScreen({super.key});
@@ -15,9 +16,33 @@ class SmsCardSettingScreen extends StatefulWidget {
 }
 
 class _SmsCardSettingScreenState extends State<SmsCardSettingScreen> {
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
+
+  AppUser? _user;
+
+  bool _isLoading = true;
   bool _isSwitched = false;
   @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    final userId = _auth.currentUser?.uid;
+    var doc = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(_user?.phone)
+        .get();
+    print(doc);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return CircularProgressIndicator(); // Display a loading spinner while data is being fetched
+    }
     return Scaffold(
       appBar: CustomAppBar(),
       body: SingleChildScrollView(
@@ -66,8 +91,8 @@ class _SmsCardSettingScreenState extends State<SmsCardSettingScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'บัตรเครดิต CIMB Thai (Thai Standard Format)',
+            Text(
+              '${_user?.userProducts}',
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
@@ -116,14 +141,19 @@ class _SmsCardSettingScreenState extends State<SmsCardSettingScreen> {
                       ),
                     ),
                     CupertinoSwitch(
-                      value: _isSwitched,
+                      value: _user!.notificationCenter,
                       activeColor: Colors.black,
-                      onChanged: (bool value) {
+                      onChanged: (bool value) async {
                         setState(() {
-                          _isSwitched = value;
+                          _user?.notificationCenter = value;
                         });
+                        // Update Firestore with the new notificationCenter value
+                        await _firestore
+                            .collection('Users')
+                            .doc(_auth.currentUser!.uid)
+                            .update({'notificationCenter': value});
                       },
-                    )
+                    ),
                   ]),
             ),
             const SizedBox(height: 10),
