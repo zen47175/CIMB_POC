@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:poc_cimb/screen/notiSetting.dart';
+import 'package:poc_cimb/screen/registerScreen/notiSetting.dart';
 import 'package:poc_cimb/screen/smsSettingScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:get/get.dart';

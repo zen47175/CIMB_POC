@@ -3,7 +3,7 @@ class AppUser {
   final String phone;
   final String pincode;
   final String lineUID;
-  late final bool notificationCenter;
+  bool? notificationCenter;
   final Map<String, Map<String, dynamic>> userProducts;
 
   AppUser({

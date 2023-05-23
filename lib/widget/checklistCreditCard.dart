@@ -4,9 +4,20 @@ import 'package:flutter/material.dart';
 class CheckListCreditCard extends StatefulWidget {
   final bool isToggle;
   final bool isSelectable; // Added new field to control selectability
-  const CheckListCreditCard(
-      {Key? key, this.isToggle = false, this.isSelectable = true})
-      : super(key: key);
+  final String cardName; // New parameter for card name
+  final String cardDetails; // New parameter for card details
+  final VoidCallback? onTap;
+  final ValueChanged<bool>
+      onSelected; // New named parameter for selection callback
+  const CheckListCreditCard({
+    Key? key,
+    this.isToggle = false,
+    this.isSelectable = true,
+    required this.cardName,
+    required this.cardDetails,
+    required this.onSelected,
+    this.onTap, // Added onSelected parameter
+  }) : super(key: key);
 
   @override
   _CheckListCreditCardState createState() => _CheckListCreditCardState();
@@ -20,6 +31,8 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
     if (widget.isSelectable) {
       setState(() {
         _selected = newValue!;
+        widget.onSelected(
+            _selected); // Call the onSelected callback with the selected state
       });
     }
   }
@@ -33,7 +46,7 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
         height: 64.38,
         decoration: BoxDecoration(
           color: _selected
-              ? Colors.red
+              ? Color.fromARGB(255, 249, 213, 211)
               : Colors.white, // changing color when selected
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
@@ -66,9 +79,9 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
+                children: [
                   Text(
-                    "บัตรเครดิต CIMB Thai Debit Card",
+                    widget.cardName,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 8,
@@ -76,7 +89,7 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
                     ),
                   ),
                   Text(
-                    "7733-38xx-xxxx-9080",
+                    widget.cardDetails,
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 8,
@@ -105,11 +118,20 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
                       },
                       activeColor: Colors.black,
                     )
-                  : const Icon(
+                  : Icon(
                       Icons.more_vert, // replace with actual icon
-                      color: Color(0xFFD9D9D9),
+                      color: Colors.grey[300],
                       size: 20,
                     ),
+              widget.isToggle
+                  ? GestureDetector(
+                      onTap: widget.onTap,
+                      child: const Icon(
+                        Icons.more_vert, // replace with actual icon
+                        color: Color(0xFFD9D9D9),
+                        size: 20,
+                      ))
+                  : SizedBox()
             ],
           ),
         ),

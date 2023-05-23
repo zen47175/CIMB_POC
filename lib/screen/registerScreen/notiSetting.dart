@@ -14,12 +14,12 @@ class NotiSettingMainScreen extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(),
       body: Column(children: [
-        SizedBox(
+        const SizedBox(
           height: 40,
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: const Align(
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
               'ตั้งค่าการเเจ้งเตือนผลิตภัณท์',
@@ -48,7 +48,7 @@ class NotiSettingMainScreen extends StatelessWidget {
         //     ),
         //   ),
         // ),
-        SizedBox(
+        const SizedBox(
           height: 24,
         ),
         Container(
@@ -109,7 +109,7 @@ class NotiSettingMainScreen extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 24,
         ),
         // Padding(
@@ -132,8 +132,8 @@ class NotiSettingMainScreen extends StatelessWidget {
         //     ),
         //   ),
         // ),
-        Padding(
-          padding: const EdgeInsets.all(20),
+        const Padding(
+          padding: EdgeInsets.all(20),
           child: Text(
               '*กรุณาเพิ่มบัตรดครดิต CIMB Thai Debit ของคุณ เพื่อรับข้อความเเจ้งเตือน'),
         ),

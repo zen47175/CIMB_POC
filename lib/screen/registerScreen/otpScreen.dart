@@ -2,18 +2,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import 'package:poc_cimb/screen/agreementAndPolicyScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:poc_cimb/screen/registerScreen/agreementAndPolicyScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 
 class OtpScreen extends StatefulWidget {
   final ConfirmationResult confirmationResult;
+  final String phoneValue;
+
   const OtpScreen({
     Key? key,
     required this.confirmationResult,
+    required this.phoneValue,
   }) : super(key: key);
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -23,15 +27,16 @@ class _OtpScreenState extends State<OtpScreen> {
   final pinController = TextEditingController();
 
   final focusNode = FocusNode();
-
+  late String phoneValue;
   final formKey = GlobalKey<FormState>();
-
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   bool _isButtonDisabled = true;
 
   @override
   void initState() {
     super.initState();
-
+    phoneValue = widget.phoneValue;
     pinController.addListener(() {
       if (pinController.text.length == 6) {
         // assuming OTP length is 6
@@ -48,11 +53,14 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void _verifyOtp() async {
     try {
+      EasyLoading.show(status: 'Verifying OTP...');
       await widget.confirmationResult.confirm(pinController.text);
+      EasyLoading.dismiss();
+
       // If the OTP is verified, show Snackbar and then go to the next screen
-      Get.snackbar('Correct', "Your pincode is correct",
+      Get.snackbar('Correct', "Your OTP is correct",
           snackPosition: SnackPosition.BOTTOM,
-          duration: const Duration(seconds: 2),
+          duration: const Duration(seconds: 1),
           backgroundColor: Colors.green,
           margin: const EdgeInsets.all(16),
           isDismissible: true,
@@ -64,8 +72,11 @@ class _OtpScreenState extends State<OtpScreen> {
 
       Get.to(() => AgreementAndPolicy());
     } on FirebaseAuthException catch (e) {
+      EasyLoading.dismiss();
+
       if (e.code == 'invalid-verification-code') {
         print('The provided verification code is invalid.');
+        pinController.clear();
         // Show some error message
         Get.snackbar('Incorrect', "The provided verification code is invalid.",
             snackPosition: SnackPosition.BOTTOM,
@@ -115,13 +126,13 @@ class _OtpScreenState extends State<OtpScreen> {
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 5),
-            const Text(
-              'abcdfeg@gmail.com',
+            Text(
+              phoneValue,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 5),
             const Text(
-              'รหัสมีอายุการใช้งาน x นาที',
+              'รหัสมีอายุการใช้งาน 30 วินาที',
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(
@@ -174,11 +185,17 @@ class _OtpScreenState extends State<OtpScreen> {
               height: 60,
             ),
             Center(
-                child: Text(
-              'ขอรหัส OTP อีกครั้ง(30 วิ)',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  color: Colors.grey.withOpacity(0.5)),
+                child: GestureDetector(
+              onTap: () async {
+                final ConfirmationResult confirmationResult =
+                    await _auth.signInWithPhoneNumber('+66${phoneValue}');
+              },
+              child: Text(
+                'ขอรหัส OTP อีกครั้ง(30 วิ)',
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey.withOpacity(0.5)),
+              ),
             )),
             const SizedBox(
               height: 24,
@@ -188,11 +205,12 @@ class _OtpScreenState extends State<OtpScreen> {
                   ? null
                   : () {
                       _verifyOtp();
+
                       print(_verifyOtp);
-                      Get.to(() => AgreementAndPolicy());
+                      // Get.to(() => AgreementAndPolicy());
                     },
               style: ElevatedButton.styleFrom(
-                primary: const Color(0xFF790009),
+                backgroundColor: const Color(0xFF790009),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(45),
                 ),

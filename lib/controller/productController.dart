@@ -1,47 +1,50 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:poc_cimb/widget/settingItem.dart';
 
-class UserController extends GetxController {
-  void addProduct(
-      String userId, String productId, bool notificationEnabled) async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
+class ProductController extends GetxController {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    var userDoc = await users.doc(userId).get();
+// final String? productName = Get.arguments as String?;
+  String productName = '';
 
-    if (userDoc.exists) {
-      List<dynamic> products =
-          (userDoc.data() as Map<String, dynamic>)['products'] ?? [];
+  RxList<SettingItem> settings = <SettingItem>[].obs;
 
-      products.add({
-        'productId': productId,
-        'notificationEnabled': notificationEnabled,
+  @override
+  void onInit() {
+    super.onInit();
+    getProductSettings();
+  }
+
+  void setProductName(String name) {
+    productName = name;
+  }
+
+  Future<void> getProductSettings() async {
+    final User? firebaseUser = _auth.currentUser;
+    final querySnapshot = await _firestore
+        .collection('Users')
+        .doc(firebaseUser?.uid) // Replace with the appropriate user ID
+        .collection('userProducts')
+        .doc(productName)
+        .get();
+
+    if (querySnapshot.exists) {
+      final data = querySnapshot.data() as Map<String, dynamic>;
+
+      data.forEach((key, value) {
+        if (key != 'productName' && key != 'productDetails') {
+          final bool settingValue = value as bool;
+          settings.add(SettingItem(label: key, value: settingValue));
+        }
       });
-
-      users.doc(userId).update({
-        'products': products,
-      });
-    } else {
-      print('User does not exist');
     }
   }
 
-  void getProducts(String userId) async {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-    var userDoc = await users.doc(userId).get();
-
-    if (userDoc.exists) {
-      List<dynamic> products =
-          (userDoc.data() as Map<String, dynamic>)['products'] ?? [];
-
-      for (var product in products) {
-        print('Product ID: ${product['productId']}');
-        print('Notification Enabled: ${product['notificationEnabled']}');
-      }
-    } else {
-      print('User does not exist');
-    }
+  void updateSettingValue(int index, bool newValue) {
+    settings[index].value = newValue;
+    update(); // Notify GetX that the state has changed
   }
 }

@@ -23,25 +23,63 @@ class _SmsCardSettingScreenState extends State<SmsCardSettingScreen> {
 
   bool _isLoading = true;
   bool _isSwitched = false;
+  bool notificationCenter = false;
+  @override
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    _getUserData();
   }
 
-  Future<void> _fetchUserData() async {
-    final userId = _auth.currentUser?.uid;
-    var doc = await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(_user?.phone)
-        .get();
-    print(doc);
+  Future<AppUser> getUserData(String uid) async {
+    final User? firebaseUser = _auth.currentUser;
+    DocumentSnapshot userDoc =
+        await _firestore.collection('Users').doc(firebaseUser?.uid).get();
+
+    if (userDoc.exists) {
+      return AppUser.fromMap(userDoc.data() as Map<String, dynamic>);
+    } else {
+      throw Exception('User not found');
+    }
+  }
+
+  void _getUserData() async {
+    final User? firebaseUser = _auth.currentUser;
+    print(firebaseUser?.phoneNumber.toString());
+    if (firebaseUser != null) {
+      try {
+        AppUser user = await getUserData(firebaseUser.uid);
+
+        print('User Products: ${user.userProducts}');
+
+        setState(() {
+          _user = user;
+          _isLoading = false;
+        });
+      } catch (e) {
+        print(e);
+      }
+    } else {
+      // Handle the case where the user is not signed in.
+      print('No user signed in');
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return CircularProgressIndicator(); // Display a loading spinner while data is being fetched
+      return Center(
+        child: CircularProgressIndicator(),
+      ); // Display a loading spinner while data is being fetched
+    }
+
+    if (_user == null) {
+      return Center(
+        child: Text("No user data available"),
+      ); // Display a message if no user data was fetched
     }
     return Scaffold(
       appBar: CustomAppBar(),
@@ -92,7 +130,7 @@ class _SmsCardSettingScreenState extends State<SmsCardSettingScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              '${_user?.userProducts}',
+              _user?.userProducts?['Product1']?['productName'] ?? '',
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w500,
@@ -101,8 +139,8 @@ class _SmsCardSettingScreenState extends State<SmsCardSettingScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              '4572-43xx-xxxx-0745',
+            Text(
+              _user?.userProducts?['Product1']?['productDetails'] ?? '',
               style: TextStyle(
                 fontFamily: 'Inter',
                 fontWeight: FontWeight.w700,
@@ -141,17 +179,20 @@ class _SmsCardSettingScreenState extends State<SmsCardSettingScreen> {
                       ),
                     ),
                     CupertinoSwitch(
-                      value: _user!.notificationCenter,
+                      value: _user!.notificationCenter ?? notificationCenter,
                       activeColor: Colors.black,
                       onChanged: (bool value) async {
                         setState(() {
-                          _user?.notificationCenter = value;
+                          _user!.notificationCenter = value;
                         });
+
                         // Update Firestore with the new notificationCenter value
-                        await _firestore
+                        final userRef = _firestore
                             .collection('Users')
-                            .doc(_auth.currentUser!.uid)
-                            .update({'notificationCenter': value});
+                            .doc(_auth.currentUser!.uid);
+                        await userRef.update({
+                          'userProducts.Product1.Transaction': value,
+                        });
                       },
                     ),
                   ]),

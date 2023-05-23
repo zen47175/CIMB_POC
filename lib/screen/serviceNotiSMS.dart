@@ -1,11 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:poc_cimb/model/user.dart';
 import 'package:poc_cimb/screen/smsCardSettingScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:poc_cimb/widget/customField.dart';
 import 'package:poc_cimb/widget/mainTitle.dart';
 import 'package:get/get.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ServiceNotiSMS extends StatefulWidget {
   ServiceNotiSMS({Key? key}) : super(key: key);
@@ -21,6 +24,9 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
   FocusNode _secondFocusNode = FocusNode();
   bool _showNewFormField = false;
   String correctPinCode = '12345';
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+
   @override
   void initState() {
     super.initState();
@@ -48,26 +54,39 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
         EasyLoading.dismiss();
 
         if (_secondController.text != correctPinCode) {
-          Get.snackbar('Correct', "Your pincode is correct",
+          Get.snackbar('Correct', "Your have setting your pincode",
               snackPosition: SnackPosition.BOTTOM,
-              duration: const Duration(seconds: 2),
+              duration: const Duration(seconds: 1),
               backgroundColor: Colors.green,
               margin: const EdgeInsets.all(16),
               isDismissible: true,
               colorText: Colors.white,
               maxWidth: Get.width * 0.9);
+          final User? firebaseUser = _auth.currentUser;
+          final userDoc = _firestore.collection('Users').doc(firebaseUser?.uid);
+          final userDocSnapshot = await userDoc.get();
 
-          Get.to(() =>
-              SmsCardSettingScreen()); // replace NextPage with your next page
-        } else {
-          Get.snackbar('Incorrect', "Your pincode is incorrect",
-              snackPosition: SnackPosition.BOTTOM,
-              duration: const Duration(seconds: 3),
-              backgroundColor: Colors.red,
-              margin: const EdgeInsets.all(16),
-              isDismissible: true,
-              colorText: Colors.white,
-              maxWidth: Get.width * 0.9);
+          if (userDocSnapshot.exists) {
+            // Make updates to the existing user data
+            final userData = userDocSnapshot.data() as Map<String, dynamic>;
+            userData['pincode'] = _secondController.text; // Update the pin code
+            userData['userProducts']['Product1']['productDetails'] =
+                '7733-38xx-xxxx-${_controller.text}'; // Update the product details
+
+            // Save the updated user data back to Firestore
+            await userDoc.set(userData);
+            Get.to(() =>
+                SmsCardSettingScreen()); // replace NextPage with your next page
+          } else {
+            Get.snackbar('Incorrect', "Your pincode is incorrect",
+                snackPosition: SnackPosition.BOTTOM,
+                duration: const Duration(seconds: 3),
+                backgroundColor: Colors.red,
+                margin: const EdgeInsets.all(16),
+                isDismissible: true,
+                colorText: Colors.white,
+                maxWidth: Get.width * 0.9);
+          }
         }
       }
     });
@@ -148,7 +167,7 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 44),
                     child: CustomFormField(
-                      hintText: 'กรุณาใส่รหัสของคุณ',
+                      hintText: 'สร้างรหัสผ่านรหัสของคุณ',
                       controller: _secondController,
                       focusNode: _secondFocusNode,
                       keyboardType: TextInputType.number,

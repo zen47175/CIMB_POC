@@ -3,7 +3,17 @@ import 'package:flutter/material.dart';
 
 class CreditCard extends StatefulWidget {
   final bool isToggle;
-  const CreditCard({Key? key, this.isToggle = false}) : super(key: key);
+  final String cardName;
+  final String cardDetails;
+  final VoidCallback? onTap;
+
+  const CreditCard({
+    Key? key,
+    this.isToggle = false,
+    required this.cardName,
+    required this.cardDetails,
+    this.onTap,
+  }) : super(key: key);
 
   @override
   _CreditCardState createState() => _CreditCardState();
@@ -44,24 +54,25 @@ class _CreditCardState extends State<CreditCard> {
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  "บัตรเครดิต CIMB Thai Debit Card",
-                  style: TextStyle(
+                  widget.cardName,
+                  style: const TextStyle(
                     color: Colors.black,
                     fontSize: 8,
                     height: 2.07,
                   ),
                 ),
                 Text(
-                  "7733-38xx-xxxx-9080",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 8,
-                      height: 2.07,
-                      fontWeight: FontWeight.w800),
+                  widget.cardDetails,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 8,
+                    height: 2.07,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
-                Text(
+                const Text(
                   "บัตรหลัก",
                   style: TextStyle(
                     color: Colors.grey,
@@ -81,13 +92,25 @@ class _CreditCardState extends State<CreditCard> {
                         _switchValue = value;
                       });
                     },
-                    activeColor: Colors.black,
+                    activeColor: Colors.green,
                   )
-                : const Icon(
+                : Icon(
                     Icons.more_vert, // replace with actual icon
-                    color: Color(0xFFD9D9D9),
+                    color: Colors.grey[300],
                     size: 20,
                   ),
+            SizedBox(
+              width: 10,
+            ),
+            widget.isToggle
+                ? GestureDetector(
+                    onTap: widget.onTap,
+                    child: const Icon(
+                      Icons.more_vert, // replace with actual icon
+                      color: Color(0xFFD9D9D9),
+                      size: 20,
+                    ))
+                : SizedBox()
           ],
         ),
       ),
