@@ -23,6 +23,7 @@ class SigninController extends GetxController {
     idController.addListener(_validateInput);
     phoneController.addListener(_validateInput);
     _validateInput();
+    getLiffId();
 
     update();
   }
@@ -38,7 +39,8 @@ class SigninController extends GetxController {
     await FlutterLineLiff().ready.then((_) async {
       final Profile profile = await FlutterLineLiff().profile;
       userId = profile.userId;
-      print(userId); // Prints the user's LINE user ID
+      print(
+          "Line User ID: $userId"); // This will print the LINE User ID to the console.
     });
     return userId;
   }
@@ -73,6 +75,7 @@ class SigninController extends GetxController {
       final ConfirmationResult confirmationResult =
           await _auth.signInWithPhoneNumber('+66${phoneController.text}');
       String lineUID = await getLiffId();
+      print("LineUID assigned to: $lineUID");
       Get.to(() => OtpScreen(
             confirmationResult: confirmationResult,
             phoneValue: phoneController.text,
