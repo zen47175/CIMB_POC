@@ -3,15 +3,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:poc_cimb/controller/smsCardSettingController.dart';
+
 import 'package:poc_cimb/model/user.dart';
 import 'package:poc_cimb/screen/addNewCard.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:poc_cimb/widget/mainTitle.dart';
 
+import '../controller/smsCardSettingController.dart';
+
 class SmsCardSettingScreen extends StatelessWidget {
+  // final SmsCardSettingController controller =
+  //     Get.put(SmsCardSettingController());
   final SmsCardSettingController controller =
       Get.put(SmsCardSettingController());
+
+  SmsCardSettingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
