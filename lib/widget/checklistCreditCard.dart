@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class CheckListCreditCard extends StatefulWidget {
   final bool isToggle;
   final bool isSelectable; // Added new field to control selectability
+
   final String cardName; // New parameter for card name
   final String cardDetails; // New parameter for card details
   final VoidCallback? onTap;

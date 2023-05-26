@@ -8,10 +8,13 @@ import 'package:poc_cimb/widget/customField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../controller/addNewCardController.dart';
 import '../../controller/signinController.dart';
 
 class SigninScreen extends StatelessWidget {
   final SigninController _controller = Get.put(SigninController());
+  final AddNewCardController addNewCardController =
+      Get.put(AddNewCardController());
 
   @override
   Widget build(BuildContext context) {

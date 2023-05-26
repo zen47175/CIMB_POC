@@ -5,12 +5,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/user.dart';
 
 class AddNewCardController extends GetxController {
-  final selectedProducts = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> selectedProducts =
+      RxList<Map<String, dynamic>>();
+  RxList<Map<String, dynamic>> unselectedProducts =
+      RxList<Map<String, dynamic>>();
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   final _user = Rx<AppUser?>(null);
-  final _isLoading = true.obs;
 
+  final _isLoading = true.obs;
   AppUser? get user => _user.value;
   bool get isLoading => _isLoading.value;
 
@@ -22,11 +25,8 @@ class AddNewCardController extends GetxController {
     final snapshot = await userRef.get();
     if (snapshot.exists) {
       final userProducts = snapshot.data()?['userProducts'];
-      if (userProducts is Map<String, dynamic>) {
-        return userProducts.entries
-            .map<Map<String, dynamic>>(
-                (entry) => entry.value as Map<String, dynamic>)
-            .toList();
+      if (userProducts is List) {
+        return List<Map<String, dynamic>>.from(userProducts);
       } else {
         throw Exception('Invalid userProducts data type');
       }
@@ -47,6 +47,53 @@ class AddNewCardController extends GetxController {
     }
   }
 
+  Future<void> updateToggle(
+      String productId, String toggleName, bool newValue) async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    final usersRef = FirebaseFirestore.instance.collection('Users');
+
+    if (firebaseUser != null) {
+      final userDoc = await usersRef.doc(firebaseUser.uid).get();
+      final userData = userDoc.data();
+
+      if (userData != null) {
+        // Assuming userProducts is a list of maps
+        final userProducts =
+            List<Map<String, dynamic>>.from(userData['userProducts']);
+
+        final updatedProducts = userProducts.map((product) {
+          if (product['id'] != productId) {
+            return product;
+          }
+
+          // Assuming toggles is a list of maps
+          final toggles = List<Map<String, dynamic>>.from(product['toggles']);
+
+          final updatedToggles = toggles.map((toggle) {
+            if (toggle['name'] != toggleName) {
+              return toggle;
+            }
+
+            return {'name': toggle['name'], 'value': newValue};
+          }).toList();
+
+          return {
+            ...product,
+            'toggles': updatedToggles,
+          };
+        }).toList();
+
+        await usersRef.doc(firebaseUser.uid).update({
+          'userProducts': updatedProducts,
+        });
+      } else {
+        throw Exception('No user data found');
+      }
+    } else {
+      throw Exception('No user signed in');
+    }
+  }
+
   void _getUserData() async {
     final User? firebaseUser = _auth.currentUser;
     print(firebaseUser?.phoneNumber.toString());
@@ -55,10 +102,11 @@ class AddNewCardController extends GetxController {
         AppUser user = await getUserData(firebaseUser.uid);
 
         print('User Products: ${user.userProducts}');
-        // if (selectedProducts.isEmpty) {
-        //   final loadedProducts = await loadUserProducts();
-        //   selectedProducts.addAll(loadedProducts);
-        // }
+
+        // Initialize unselectedProducts with userProducts
+        unselectedProducts.assignAll(List<Map<String, dynamic>>.from(
+            user.userProducts.map((product) => product.toMap())));
+
         _user.value = user;
         _isLoading.value = false;
       } catch (e) {
@@ -73,10 +121,14 @@ class AddNewCardController extends GetxController {
 
   void addToSelectedProducts(Map<String, dynamic> product) {
     selectedProducts.add(product);
+    unselectedProducts.removeWhere((p) => p == product);
+    update();
   }
 
   void removeFromSelectedProducts(Map<String, dynamic> product) {
-    selectedProducts.remove(product);
+    selectedProducts.removeWhere((p) => p == product);
+    unselectedProducts.add(product);
+    update();
   }
 
   @override

@@ -33,14 +33,18 @@ dependencies:
   firebase_auth: ^4.6.1
   flutter:
     sdk: flutter
-  flutter_easyloading: ^3.0.5
+
   responsive_framework: ^1.0.0
   shared_preferences: ^2.1.1
   get_storage: ^2.1.1
-
-dev_dependencies:
   cloud_firestore: ^4.7.0
   firebase_core: ^2.12.0
+  font_awesome_flutter: ^9.2.0
+  get: ^4.6.5
+  pinput: ^2.2.19
+  flutter_easyloading: ^3.0.5
+dev_dependencies:
+  
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -50,9 +54,7 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  font_awesome_flutter: ^9.2.0
-  get: ^4.6.5
-  pinput: ^2.2.19
+  
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

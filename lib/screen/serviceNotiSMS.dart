@@ -23,77 +23,80 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
   TextEditingController _secondController = TextEditingController();
   FocusNode _secondFocusNode = FocusNode();
   bool _showNewFormField = false;
-  String correctPinCode = '12345';
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() async {
-      if (_controller.text.length == 4) {
-        EasyLoading.show(status: 'Checking number...');
-        await Future.delayed(Duration(seconds: 1)); // wait for 1 second
-        EasyLoading.dismiss();
-        setState(() {
-          _showNewFormField = true;
-        });
-        FocusScope.of(context).requestFocus(
-            _secondFocusNode); // automatically focus on the new field
-      } else {
-        setState(() {
-          _showNewFormField = false;
-        });
-      }
-    });
+    _controller.addListener(_firstFieldListener);
+    _secondController.addListener(_secondFieldListener);
+  }
 
-    _secondController.addListener(() async {
-      if (_secondController.text.length == 4) {
-        EasyLoading.show(status: 'Validating pin code...');
-        await Future.delayed(Duration(seconds: 1)); // wait for 1 second
-        EasyLoading.dismiss();
+  Future<void> _firstFieldListener() async {
+    if (_controller.text.length == 4) {
+      EasyLoading.show(status: 'Checking number...');
+      await Future.delayed(Duration(seconds: 1)); // wait for 1 second
+      EasyLoading.dismiss();
 
-        if (_secondController.text != correctPinCode) {
-          Get.snackbar('Correct', "Your have setting your pincode",
-              snackPosition: SnackPosition.BOTTOM,
-              duration: const Duration(seconds: 1),
-              backgroundColor: Colors.green,
-              margin: const EdgeInsets.all(16),
-              isDismissible: true,
-              colorText: Colors.white,
-              maxWidth: Get.width * 0.9);
-          final User? firebaseUser = _auth.currentUser;
-          final userDoc = _firestore.collection('Users').doc(firebaseUser?.uid);
-          final userDocSnapshot = await userDoc.get();
+      setState(() {
+        _showNewFormField = true;
+      });
+      FocusScope.of(context).requestFocus(_secondFocusNode);
+    } else {
+      setState(() {
+        _showNewFormField = false;
+      });
+    }
+  }
 
-          if (userDocSnapshot.exists) {
-            // Make updates to the existing user data
-            final userData = userDocSnapshot.data() as Map<String, dynamic>;
-            userData['pincode'] = _secondController.text; // Update the pin code
-            userData['userProducts']['Product1']['productDetails'] =
-                '7733-38xx-xxxx-${_controller.text}'; // Update the product details
+  Future<void> _secondFieldListener() async {
+    if (_secondController.text.length == 4) {
+      EasyLoading.show(status: 'Setting pin code...');
+      await Future.delayed(Duration(seconds: 1)); // wait for 1 second
+      EasyLoading.dismiss();
 
-            // Save the updated user data back to Firestore
-            await userDoc.set(userData);
-            Get.to(() =>
-                SmsCardSettingScreen()); // replace NextPage with your next page
-          } else {
-            Get.snackbar('Incorrect', "Your pincode is incorrect",
-                snackPosition: SnackPosition.BOTTOM,
-                duration: const Duration(seconds: 3),
-                backgroundColor: Colors.red,
-                margin: const EdgeInsets.all(16),
-                isDismissible: true,
-                colorText: Colors.white,
-                maxWidth: Get.width * 0.9);
+      Get.snackbar('Success', "Your have set your pincode",
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 1),
+          backgroundColor: Colors.green,
+          margin: const EdgeInsets.all(16),
+          isDismissible: true,
+          colorText: Colors.white,
+          maxWidth: Get.width * 0.9);
+
+      final User? firebaseUser = _auth.currentUser;
+      final userDoc = _firestore.collection('Users').doc(firebaseUser?.uid);
+      final userDocSnapshot = await userDoc.get();
+
+      if (userDocSnapshot.exists) {
+        // Make updates to the existing user data
+        final userData = userDocSnapshot.data() as Map<String, dynamic>;
+        userData['pincode'] = _secondController.text; // Update the pin code
+
+        final userProducts = userData['userProducts'] as List<dynamic>;
+        if (userProducts.isNotEmpty) {
+          final firstProduct = userProducts.first;
+          if (firstProduct is Map<String, dynamic>) {
+            firstProduct['productDetails'] =
+                '7733-38xx-xxxx-${_controller.text}';
           }
         }
+
+        // Save the updated user data back to Firestore
+        await userDoc.set(userData);
+
+        Get.to(() => SmsCardSettingScreen());
       }
-    });
+      print(_secondController.text);
+    }
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_firstFieldListener);
+    _secondController.removeListener(_secondFieldListener);
     _controller.dispose();
     _secondController.dispose();
     _secondFocusNode.dispose();

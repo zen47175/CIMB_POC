@@ -73,35 +73,67 @@ class SigninController extends GetxController {
         pincode: '',
         lineUID: '',
         notificationCenter: false,
-        userProducts: {
-          'Product1': {
-            'productName': 'บัตรเครดิต CIMB Thai Credit Card',
-            'productDetails': '7733-38xx-xxxx-9080',
-            'Transaction': false,
-            'cancleTransaction': false,
-            'WithdrawnCash': false,
-            'Transfer': false,
-            'Payment': false,
-          },
-          'Product2': {
-            'productName': 'บัตรเดบิต CIMB Thai Debit Card (Banking Account)',
-            'productDetails': '7733-38xx-xxxx-2243',
-            'Transaction': false,
-            'Deposit': false,
-            'Withdrawn': false,
-            'Transfer': false,
-            'Payment': false,
-          },
-          'Product3': {
-            'productName': 'บัตรเครดิต CIMB Thai Credit Card',
-            'productDetails': '7733-38xx-xxxx-9080',
-            'Transaction': false,
-            'cancleTransaction': false,
-            'WithdrawnCash': false,
-            'Payment': false,
-          },
-        },
+        userProducts: [
+          Product(
+            productName: 'บัตรเครดิต CIMB Thai Credit Card',
+            productDetails: '7733-38xx-xxxx-9080',
+            type: 'Credit',
+            toggles: [
+              Toggle(name: 'รายการใช้จ่าย', value: false),
+              Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: false),
+              Toggle(name: 'ถอนเงินสด', value: false),
+              Toggle(name: 'ชำระเงิน', value: false),
+            ],
+            id: '1',
+          ),
+          Product(
+            productName: 'บัตรเดบิต CIMB Thai Debit Card (Banking Account)',
+            productDetails: '7733-38xx-xxxx-2243',
+            type: 'Debit',
+            toggles: [
+              Toggle(name: 'รายการใช้จ่าย', value: false),
+              Toggle(name: 'ฝากเงิน', value: false),
+              Toggle(name: 'ถอนเงิน', value: false),
+              Toggle(name: 'โอนเงิน', value: false),
+              Toggle(name: 'ชำระเงิน', value: false),
+            ],
+            id: '2',
+          ),
+          Product(
+            productName: 'บัตรเครดิต CIMB Thai Credit Card',
+            productDetails: '7733-38xx-xxxx-9080',
+            type: 'Credit',
+            toggles: [
+              Toggle(name: 'รายการใช้จ่าย', value: false),
+              Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: false),
+              Toggle(name: 'ถอดเงินสด', value: false),
+              Toggle(name: 'ชำระเงิน', value: false),
+            ],
+            id: '3',
+          ),
+          Product(
+            productName: 'สินเชื่อบ้าน',
+            productDetails: 'xxxx-xxx-xxxx-xxxx',
+            type: 'Loan',
+            toggles: [
+              Toggle(name: 'ครบกำหนดชำระ', value: false),
+              Toggle(name: 'ชำระค่างวด', value: false),
+            ],
+            id: '4',
+          ),
+          Product(
+            productName: 'สินเชื่อรถ',
+            productDetails: 'xxxx-xxx-xxxx-xxxx',
+            type: 'Loan',
+            toggles: [
+              Toggle(name: 'ครบกำหนดชำระ', value: false),
+              Toggle(name: 'ชำระค่างวด', value: false),
+            ],
+            id: '5',
+          ),
+        ],
       );
+
       final User? firebaseUser = _auth.currentUser;
       await _firestore
           .collection('Users')
