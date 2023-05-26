@@ -23,7 +23,7 @@ class SigninController extends GetxController {
     idController.addListener(_validateInput);
     phoneController.addListener(_validateInput);
     _validateInput();
-    getLiffId();
+
     update();
   }
 
@@ -72,14 +72,14 @@ class SigninController extends GetxController {
       // If no user exists with the id or phone, then create a new one
       final ConfirmationResult confirmationResult =
           await _auth.signInWithPhoneNumber('+66${phoneController.text}');
-
+      String lineUid = await getLiffId();
       Get.to(() => OtpScreen(
             confirmationResult: confirmationResult,
             phoneValue: phoneController.text,
           ));
 
       // Create new user instance
-      String lineUid = await getLiffId();
+
       AppUser newUser = AppUser(
         id: idController.text,
         phone: phoneController.text,
