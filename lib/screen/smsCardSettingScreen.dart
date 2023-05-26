@@ -9,7 +9,7 @@ import 'package:poc_cimb/screen/addNewCard.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:poc_cimb/widget/mainTitle.dart';
 
-import '../controller/smsCardSettingController.dart';
+import '../controller/SmsCardSettingController.dart';
 
 class SmsCardSettingScreen extends StatelessWidget {
   // final SmsCardSettingController controller =

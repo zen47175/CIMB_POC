@@ -9,8 +9,10 @@ import 'package:poc_cimb/screen/registerScreen/notiSetting.dart';
 import 'package:poc_cimb/screen/registerScreen/signinScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:poc_cimb/screen/smsCardSettingScreen.dart';
+
 import 'package:poc_cimb/screen/smsSettingScreen.dart';
+
+import 'screen/smsCardSettingScreen.dart';
 
 Future<void> main() async {
   await GetStorage.init();
