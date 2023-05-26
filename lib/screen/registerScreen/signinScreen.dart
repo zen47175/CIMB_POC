@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_line_liff/flutter_line_liff.dart';
 import 'package:get/get.dart';
 import 'package:poc_cimb/model/user.dart';
 import 'package:poc_cimb/screen/registerScreen/otpScreen.dart';

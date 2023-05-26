@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_line_liff/flutter_line_liff.dart';
 import 'package:get/get.dart';
 import 'package:poc_cimb/model/user.dart';
 import 'package:poc_cimb/screen/registerScreen/otpScreen.dart';
@@ -13,7 +14,7 @@ class SigninController extends GetxController {
   final TextEditingController phoneController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-
+  final String? lineId = FlutterLineLiff().id;
   final RxBool isValidInput = false.obs;
 
   @override
@@ -22,6 +23,7 @@ class SigninController extends GetxController {
     idController.addListener(_validateInput);
     phoneController.addListener(_validateInput);
     _validateInput();
+    getLiffId();
     update();
   }
 
@@ -29,6 +31,18 @@ class SigninController extends GetxController {
     isValidInput.value =
         idController.text.length == 13 && phoneController.text.length == 10;
     print(isValidInput.value);
+  }
+
+  void getLiffId() async {
+    FlutterLineLiff().ready.then((_) async {
+      final String version = FlutterLineLiff().version;
+
+      final Profile profile = await FlutterLineLiff().profile;
+
+      print(profile);
+      print(lineId);
+      print(version);
+    });
   }
 
   @override
@@ -71,7 +85,7 @@ class SigninController extends GetxController {
         id: idController.text,
         phone: phoneController.text,
         pincode: '',
-        lineUID: '',
+        lineUID: lineId.toString(),
         notificationCenter: false,
         userProducts: [
           Product(

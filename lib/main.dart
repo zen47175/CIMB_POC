@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_line_liff/flutter_line_liff.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:poc_cimb/firebase_options.dart';
@@ -15,6 +18,16 @@ import 'package:poc_cimb/screen/smsSettingScreen.dart';
 import 'screen/smsCardSettingScreen.dart';
 
 Future<void> main() async {
+  String LineID = '1661241096-NAzwM1wp';
+  FlutterLineLiff().init(
+    config: Config(liffId: LineID),
+    successCallback: () {
+      log('LIFF init success.');
+    },
+    errorCallback: (error) {
+      log('LIFF init error: ${error.name}, ${error.message}, ${error.stack}');
+    },
+  );
   await GetStorage.init();
   GetStorage box = GetStorage();
   WidgetsFlutterBinding.ensureInitialized();
