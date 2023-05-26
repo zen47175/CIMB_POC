@@ -72,7 +72,7 @@ class SigninController extends GetxController {
       // If no user exists with the id or phone, then create a new one
       final ConfirmationResult confirmationResult =
           await _auth.signInWithPhoneNumber('+66${phoneController.text}');
-      String lineUid = await getLiffId();
+      String lineUID = await getLiffId();
       Get.to(() => OtpScreen(
             confirmationResult: confirmationResult,
             phoneValue: phoneController.text,
@@ -84,7 +84,7 @@ class SigninController extends GetxController {
         id: idController.text,
         phone: phoneController.text,
         pincode: '',
-        lineUID: lineUid,
+        lineUID: lineUID,
         notificationCenter: false,
         userProducts: [
           Product(
