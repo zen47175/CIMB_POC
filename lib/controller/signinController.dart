@@ -14,7 +14,7 @@ class SigninController extends GetxController {
   final TextEditingController phoneController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-  final String? lineId = FlutterLineLiff().id;
+
   final RxBool isValidInput = false.obs;
 
   @override
@@ -33,16 +33,14 @@ class SigninController extends GetxController {
     print(isValidInput.value);
   }
 
-  void getLiffId() async {
-    FlutterLineLiff().ready.then((_) async {
-      final String version = FlutterLineLiff().version;
-
+  Future<String> getLiffId() async {
+    String userId = '';
+    await FlutterLineLiff().ready.then((_) async {
       final Profile profile = await FlutterLineLiff().profile;
-
-      print(profile);
-      print(lineId);
-      print(version);
+      userId = profile.userId;
+      print(userId); // Prints the user's LINE user ID
     });
+    return userId;
   }
 
   @override
@@ -81,11 +79,12 @@ class SigninController extends GetxController {
           ));
 
       // Create new user instance
+      String lineUid = await getLiffId();
       AppUser newUser = AppUser(
         id: idController.text,
         phone: phoneController.text,
         pincode: '',
-        lineUID: lineId.toString(),
+        lineUID: lineUid,
         notificationCenter: false,
         userProducts: [
           Product(
