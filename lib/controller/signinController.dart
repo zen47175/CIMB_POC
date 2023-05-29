@@ -39,9 +39,9 @@ class SigninController extends GetxController {
     await FlutterLineLiff().ready.then((_) async {
       final Profile profile = await FlutterLineLiff().profile;
       userId = profile.userId;
-      print(
-          "Line User ID: $userId"); // This will print the LINE User ID to the console.
+      print("Line User ID: $userId");
     });
+    print("getLiffId() is returning: $userId");
     return userId;
   }
 
