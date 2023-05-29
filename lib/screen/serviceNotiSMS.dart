@@ -55,7 +55,6 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
   }
 
   Future<void> _secondFieldListener() async {
-    final SigninController controller = Get.put(SigninController());
     if (_secondController.text.length == 4) {
       EasyLoading.show(status: 'Setting pin code...');
       await Future.delayed(Duration(seconds: 1)); // wait for 1 second

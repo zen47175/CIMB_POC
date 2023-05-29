@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_line_liff/flutter_line_liff.dart';
@@ -8,6 +10,9 @@ import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:poc_cimb/widget/customField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../model/product.dart';
+import '../model/toggle.dart';
 
 class SigninController extends GetxController {
   final TextEditingController idController = TextEditingController();
@@ -23,7 +28,7 @@ class SigninController extends GetxController {
     idController.addListener(_validateInput);
     phoneController.addListener(_validateInput);
     _validateInput();
-    // getLiffId();
+    getLiffId();
 
     update();
   }
@@ -82,78 +87,91 @@ class SigninController extends GetxController {
       String lineUID = await getLiffId();
       // Create new user instance
 
-      AppUser newUser = AppUser(
-        id: idController.text,
-        phone: phoneController.text,
-        pincode: '',
-        lineUID: lineUID,
-        notificationCenter: true,
-        userProducts: [
-          Product(
-            productName: 'บัตรเครดิต CIMB Thai Credit Card',
-            productDetails: '7733-38xx-xxxx-9080',
-            type: 'CreditGold',
-            toggles: [
-              Toggle(name: 'รายการใช้จ่าย', value: true),
-              Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
-              Toggle(name: 'ถอนเงินสด', value: true),
-              Toggle(name: 'ชำระเงิน', value: true),
-            ],
-            id: '1',
-          ),
-          Product(
-            productName: 'บัตรเดบิต CIMB Thai Debit Card (Banking Account)',
-            productDetails: '7733-38xx-xxxx-2243',
-            type: 'Debit',
-            toggles: [
-              Toggle(name: 'รายการใช้จ่าย', value: true),
-              Toggle(name: 'ฝากเงิน', value: true),
-              Toggle(name: 'ถอนเงิน', value: true),
-              Toggle(name: 'โอนเงิน', value: true),
-              Toggle(name: 'ชำระเงิน', value: true),
-            ],
-            id: '2',
-          ),
-          Product(
-            productName: 'บัตรเครดิต CIMB Thai Credit Card',
-            productDetails: '7733-38xx-xxxx-9080',
-            type: 'CreditSliver',
-            toggles: [
-              Toggle(name: 'รายการใช้จ่าย', value: true),
-              Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
-              Toggle(name: 'ถอดเงินสด', value: true),
-              Toggle(name: 'ชำระเงิน', value: true),
-            ],
-            id: '3',
-          ),
-          Product(
-            productName: 'สินเชื่อบ้าน',
-            productDetails: 'xxxx-xxx-xxxx-xxxx',
-            type: 'HomeLoan',
-            toggles: [
-              Toggle(name: 'ครบกำหนดชำระ', value: true),
-              Toggle(name: 'ชำระค่างวด', value: true),
-            ],
-            id: '4',
-          ),
-          Product(
-            productName: 'สินเชื่อส่วนบุลคล',
-            productDetails: 'xxxx-xxx-xxxx-xxxx',
-            type: 'Personal',
-            toggles: [
-              Toggle(name: 'ครบกำหนดชำระ', value: true),
-              Toggle(name: 'ชำระค่างวด', value: true),
-            ],
-            id: '5',
-          ),
-        ],
-      );
+      try {
+        AppUser newUser = AppUser(
+          id: idController.text,
+          phone: phoneController.text,
+          pincode: '',
+          lineUID: lineUID,
+          notificationCenter: true,
+          userProducts: [
+            Product(
+              productName: 'บัตรเครดิต CIMB Thai Credit Card',
+              productDetails: '7733-38xx-xxxx-9080',
+              type: 'CreditGold',
+              toggles: [
+                Toggle(name: 'รายการใช้จ่าย', value: true),
+                Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+                Toggle(name: 'ถอนเงินสด', value: true),
+                Toggle(name: 'ชำระเงิน', value: true),
+              ],
+              id: '1',
+            ),
+            Product(
+              productName: 'บัตรเดบิต CIMB Thai Debit Card (Banking Account)',
+              productDetails: '7733-38xx-xxxx-2243',
+              type: 'Debit',
+              toggles: [
+                Toggle(name: 'รายการใช้จ่าย', value: true),
+                Toggle(name: 'ฝากเงิน', value: true),
+                Toggle(name: 'ถอนเงิน', value: true),
+                Toggle(name: 'โอนเงิน', value: true),
+                Toggle(name: 'ชำระเงิน', value: true),
+              ],
+              id: '2',
+            ),
+            Product(
+              productName: 'บัตรเครดิต CIMB Thai Credit Card',
+              productDetails: '7733-38xx-xxxx-9080',
+              type: 'CreditSliver',
+              toggles: [
+                Toggle(name: 'รายการใช้จ่าย', value: true),
+                Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+                Toggle(name: 'ถอดเงินสด', value: true),
+                Toggle(name: 'ชำระเงิน', value: true),
+              ],
+              id: '3',
+            ),
+            Product(
+              productName: 'สินเชื่อบ้าน',
+              productDetails: 'xxxx-xxx-xxxx-xxxx',
+              type: 'HomeLoan',
+              toggles: [
+                Toggle(name: 'ครบกำหนดชำระ', value: true),
+                Toggle(name: 'ชำระค่างวด', value: true),
+              ],
+              id: '4',
+            ),
+            Product(
+              productName: 'สินเชื่อส่วนบุลคล',
+              productDetails: 'xxxx-xxx-xxxx-xxxx',
+              type: 'Personal',
+              toggles: [
+                Toggle(name: 'ครบกำหนดชำระ', value: true),
+                Toggle(name: 'ชำระค่างวด', value: true),
+              ],
+              id: '5',
+            ),
+          ],
+        );
 
-      final User? firebaseUser = _auth.currentUser;
-      await _firestore
-          .collection('Users')
-          .doc(firebaseUser?.uid)
-          .set(newUser.toMap());
+        final User? firebaseUser = _auth.currentUser;
+        await _firestore
+            .collection('Users')
+            .doc(firebaseUser?.uid)
+            .set(newUser.toMap());
+
+        DocumentSnapshot result =
+            await _firestore.collection('Users').doc(firebaseUser?.uid).get();
+        if (result.exists) {
+          print(result);
+        } else {
+          print("No data found");
+        }
+      } on FirebaseException catch (e) {
+        print(e);
+        print(e.message);
+      }
     } else {
       // If a user exists with either the id or phone, show a popup
       showDialog(

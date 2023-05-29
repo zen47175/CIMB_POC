@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 class AgreementAndPolicy extends StatefulWidget {
   @override
-  // ignore: library_private_types_in_public_api
   _AgreementAndPolicyState createState() => _AgreementAndPolicyState();
 }
 
@@ -66,7 +65,7 @@ class _AgreementAndPolicyState extends State<AgreementAndPolicy> {
             child: ElevatedButton(
               onPressed: _isChecked
                   ? () {
-                      Get.to(() => NotiSettingMainScreen());
+                      Get.to(() => const NotiSettingMainScreen());
                     }
                   : null,
               child: const Text('ยืนยัน'),
