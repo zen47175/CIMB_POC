@@ -2,11 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
+import 'package:poc_cimb/controller/otpController.dart';
 import 'package:poc_cimb/controller/signinController.dart';
 import 'package:poc_cimb/widget/countdown.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
-
-import '../../controller/OtpScreenController.dart';
 
 class OtpScreen extends StatelessWidget {
   final ConfirmationResult confirmationResult;
