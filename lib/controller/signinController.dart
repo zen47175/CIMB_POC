@@ -149,7 +149,7 @@ class SigninController extends GetxController {
         ],
       );
 
-      final User? firebaseUser = _auth.currentUser;
+      // final User? firebaseUser = _auth.currentUser;
       await _firestore.collection('Users').doc(lineUID).set(newUser.toMap());
     } else {
       // If a user exists with either the id or phone, show a popup
