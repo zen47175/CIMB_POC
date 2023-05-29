@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:poc_cimb/controller/addNewCardController.dart';
 import 'package:poc_cimb/controller/productController.dart';
-import 'package:poc_cimb/controller/smsCardSettingController.dart';
+
 import 'package:poc_cimb/firebase_options.dart';
 import 'package:poc_cimb/model/authen.dart';
 import 'package:poc_cimb/screen/addNewCard.dart';
@@ -20,6 +20,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:poc_cimb/screen/smsSettingScreen.dart';
 
+import 'controller/SmsCardSettingController.dart';
 import 'screen/smsCardSettingScreen.dart';
 
 Future<void> initializeApp() async {
