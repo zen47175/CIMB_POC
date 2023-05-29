@@ -28,7 +28,7 @@ class SigninController extends GetxController {
     idController.addListener(_validateInput);
     phoneController.addListener(_validateInput);
     _validateInput();
-    // getLiffId();
+    getLiffId();
 
     update();
   }
@@ -108,7 +108,7 @@ class SigninController extends GetxController {
               id: '1',
             ),
             Product(
-              productName: 'บัตรเดบิต CIMB Thai Debit Card (Banking Account)',
+              productName: 'บัตรเดบิต CIMB Thai Debit Card',
               productDetails: '7733-38xx-xxxx-2243',
               type: 'Debit',
               toggles: [

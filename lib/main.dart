@@ -24,10 +24,24 @@ import 'package:poc_cimb/screen/smsSettingScreen.dart';
 import 'controller/SmsCardSettingController.dart';
 import 'screen/smsCardSettingScreen.dart';
 
+Future<void> initializeApp() async {
+  String LineID = '1661241096-NAzwM1wp';
+  FlutterLineLiff().init(
+    config: Config(liffId: LineID),
+    successCallback: () {
+      log('LIFF init success.');
+    },
+    errorCallback: (error) {
+      log('LIFF init error: ${error.name}, ${error.message}, ${error.stack}');
+    },
+  );
+}
+
 void main() async {
   await GetStorage.init();
   GetStorage box = GetStorage();
   WidgetsFlutterBinding.ensureInitialized();
+  initializeApp();
 
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -45,24 +59,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future<void> initializeApp() async {
-      String LineID = '1661241096-NAzwM1wp';
-      FlutterLineLiff().init(
-        config: Config(liffId: LineID),
-        successCallback: () {
-          log('LIFF init success.');
-        },
-        errorCallback: (error) {
-          log('LIFF init error: ${error.name}, ${error.message}, ${error.stack}');
-        },
-      );
-      await GetStorage.init();
-      GetStorage box = GetStorage();
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-    }
-
     void configEasyLoading() {
       EasyLoading.instance
         ..loadingStyle = EasyLoadingStyle.light
@@ -78,7 +74,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),
       home: SigninScreen(),
-      // initialRoute: '/',
+      initialRoute: '/',
       // routes: {
       //   'home': (context) => isSignedIn ? SigninScreen() : SmsSettingScreen(),
       // },
