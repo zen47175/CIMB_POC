@@ -39,9 +39,9 @@ class SigninController extends GetxController {
     await FlutterLineLiff().ready.then((_) async {
       final Profile profile = await FlutterLineLiff().profile;
       userId = profile.userId;
-      print("Line User ID: $userId");
+      print(
+          "Line User ID: $userId"); // This will print the LINE User ID to the console.
     });
-    print("getLiffId() is returning: $userId");
     return userId;
   }
 
@@ -139,7 +139,7 @@ class SigninController extends GetxController {
           Product(
             productName: 'สินเชื่อส่วนบุลคล',
             productDetails: 'xxxx-xxx-xxxx-xxxx',
-            type: 'PersonalLoan',
+            type: 'Personal',
             toggles: [
               Toggle(name: 'ครบกำหนดชำระ', value: true),
               Toggle(name: 'ชำระค่างวด', value: true),
@@ -149,8 +149,11 @@ class SigninController extends GetxController {
         ],
       );
 
-      // final User? firebaseUser = _auth.currentUser;
-      await _firestore.collection('Users').doc(lineUID).set(newUser.toMap());
+      final User? firebaseUser = _auth.currentUser;
+      await _firestore
+          .collection('Users')
+          .doc(firebaseUser?.uid)
+          .set(newUser.toMap());
     } else {
       // If a user exists with either the id or phone, show a popup
       showDialog(

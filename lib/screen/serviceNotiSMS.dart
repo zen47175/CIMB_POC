@@ -11,6 +11,8 @@ import 'package:poc_cimb/widget/mainTitle.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../controller/signinController.dart';
+
 class ServiceNotiSMS extends StatefulWidget {
   ServiceNotiSMS({Key? key}) : super(key: key);
 
@@ -53,6 +55,7 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
   }
 
   Future<void> _secondFieldListener() async {
+    final SigninController controller = Get.put(SigninController());
     if (_secondController.text.length == 4) {
       EasyLoading.show(status: 'Setting pin code...');
       await Future.delayed(Duration(seconds: 1)); // wait for 1 second

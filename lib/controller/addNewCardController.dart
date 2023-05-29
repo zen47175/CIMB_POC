@@ -20,9 +20,11 @@ class AddNewCardController extends GetxController {
   Future<List<Map<String, dynamic>>> loadUserProducts() async {
     final _auth = FirebaseAuth.instance;
     final User? firebaseUser = _auth.currentUser;
+
     final userRef =
         FirebaseFirestore.instance.collection('Users').doc(firebaseUser?.uid);
     final snapshot = await userRef.get();
+
     if (snapshot.exists) {
       final userProducts = snapshot.data()?['userProducts'];
       if (userProducts is List) {
