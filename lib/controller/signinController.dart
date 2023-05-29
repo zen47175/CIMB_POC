@@ -28,7 +28,7 @@ class SigninController extends GetxController {
     idController.addListener(_validateInput);
     phoneController.addListener(_validateInput);
     _validateInput();
-    getLiffId();
+    // getLiffId();
 
     update();
   }
