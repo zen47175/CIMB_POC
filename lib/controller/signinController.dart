@@ -81,12 +81,12 @@ class SigninController extends GetxController {
           ));
       String lineUID = await getLiffId();
       // Create new user instance
-      final User? firebaseUser = _auth.currentUser;
+
       AppUser newUser = AppUser(
         id: idController.text,
         phone: phoneController.text,
         pincode: '',
-        lineUID: _auth.currentUser.toString(),
+        lineUID: lineUID,
         notificationCenter: true,
         userProducts: [
           Product(
@@ -149,6 +149,7 @@ class SigninController extends GetxController {
         ],
       );
 
+      // final User? firebaseUser = _auth.currentUser;
       await _firestore.collection('Users').doc(lineUID).set(newUser.toMap());
     } else {
       // If a user exists with either the id or phone, show a popup
