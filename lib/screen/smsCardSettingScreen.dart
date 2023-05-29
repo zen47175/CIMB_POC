@@ -126,30 +126,30 @@ class SmsCardSettingScreen extends StatelessWidget {
                       CupertinoSwitch(
                         value:
                             controller.user.value!.notificationCenter ?? true,
-                        activeColor: Colors.black,
+                        activeColor: Colors.green,
                         onChanged: (bool value) async {
                           controller.user.value!.notificationCenter = value;
 
-                          // Update the first product's Transaction toggle value
-                          if (controller.user.value!.userProducts.isNotEmpty) {
-                            var toggles =
-                                controller.user.value!.userProducts[0]!.toggles;
-                            toggles[0] =
-                                Toggle(name: toggles[0].name, value: value);
-                          }
+                          // // Update the first product's Transaction toggle value
+                          // if (controller.user.value!.userProducts.isNotEmpty) {
+                          //   var toggles =
+                          //       controller.user.value!.userProducts[0]!.toggles;
+                          //   toggles[0] =
+                          //       Toggle(name: toggles[0].name, value: value);
+                          // }
 
-                          // Update Firestore with the new toggle value
-                          final userRef = FirebaseFirestore.instance
-                              .collection('Users')
-                              .doc(FirebaseAuth.instance.currentUser!.uid);
-                          final List<Map<String, dynamic>> toggles = controller
-                              .user.value!.userProducts[0]!.toggles
-                              .map((toggle) => toggle.toMap())
-                              .toList();
-                          toggles[0]['value'] = value;
-                          await userRef.update({
-                            'userProducts.0.toggles': toggles,
-                          });
+                          // // Update Firestore with the new toggle value
+                          // final userRef = FirebaseFirestore.instance
+                          //     .collection('Users')
+                          //     .doc(FirebaseAuth.instance.currentUser!.uid);
+                          // final List<Map<String, dynamic>> toggles = controller
+                          //     .user.value!.userProducts[0]!.toggles
+                          //     .map((toggle) => toggle.toMap())
+                          //     .toList();
+                          // toggles[0]['value'] = value;
+                          // await userRef.update({
+                          //   'userProducts.0.toggles': toggles,
+                          // });
                         },
                       ),
                     ],

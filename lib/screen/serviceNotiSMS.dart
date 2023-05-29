@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:poc_cimb/model/user.dart';
 import 'package:poc_cimb/screen/smsCardSettingScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';

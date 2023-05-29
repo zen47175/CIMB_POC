@@ -18,38 +18,41 @@ class AddNewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double appBarHeight = kToolbarHeight;
+
     return Scaffold(
       appBar: CustomAppBar(),
       body: ListView(
         children: [
           Container(
-            height: 32,
+            height: screenHeight * 0.02,
           ),
           Padding(
-            padding: const EdgeInsets.only(
-              left: 28.0,
+            padding: EdgeInsets.only(
+              left: screenWidth * 0.05,
             ),
             child: MainTitle(
               text: 'เพิ่มผลิตภัณฑ์เพื่อเริ่มต้นการใช้งาน',
-              fontSize: 18,
+              fontSize: screenWidth * 0.04,
             ),
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: screenHeight * 0.03,
           ),
-          const DecoratedBox(
+          DecoratedBox(
             decoration: BoxDecoration(
               color: Color.fromRGBO(51, 55, 57, 0.1),
             ),
             child: Padding(
-              padding:
-                  EdgeInsets.all(8.0), // adjust this padding as per your needs
+              padding: EdgeInsets.all(screenWidth * 0.02),
               child: Text(
                 'บัตรเครดิต',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
-                  fontSize: 14,
+                  fontSize: screenWidth * 0.036,
                   color: Colors.black,
                 ),
               ),
@@ -60,7 +63,9 @@ class AddNewCard extends StatelessWidget {
             builder: (BuildContext context,
                 AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
@@ -88,43 +93,21 @@ class AddNewCard extends StatelessWidget {
               }
             },
           ),
-
-          // CheckListCreditCard(
-          //   isToggle: false,
-          //   isSelectable: true,
-          //   cardName:
-          //       addNewCardController.user?.userProducts[0]?.productName ?? '',
-          //   cardDetails:
-          //       addNewCardController.user?.userProducts[0]?.productDetails ??
-          //           '',
-          //   onSelected: (isSelected) {
-          //     if (isSelected) {
-          //       addNewCardController.addToSelectedProducts(
-          //           // addNewCardController.user?.userProducts[0]?.toMap() ??
-          //           {});
-          //     } else {
-          //       addNewCardController.removeFromSelectedProducts(
-          //           // addNewCardController.user?.userProducts[0]?.toMap() ??
-          //           {});
-          //     }
-          //   },
-          // ),
-          const SizedBox(
-            height: 25,
+          SizedBox(
+            height: screenHeight * 0.04,
           ),
-          const DecoratedBox(
+          DecoratedBox(
             decoration: BoxDecoration(
               color: Color.fromRGBO(51, 55, 57, 0.1),
             ),
             child: Padding(
-              padding:
-                  EdgeInsets.all(8.0), // adjust this padding as per your needs
+              padding: EdgeInsets.all(screenWidth * 0.02),
               child: Text(
                 'ผลิตภัณฑ์ที่เกี่ยวข้องกับคุณ',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
-                  fontSize: 14,
+                  fontSize: screenWidth * 0.036,
                   color: Colors.black,
                 ),
               ),
@@ -135,13 +118,15 @@ class AddNewCard extends StatelessWidget {
             builder: (BuildContext context,
                 AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
                 return ListView.builder(
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: NeverScrollableScrollPhysics(),
                   itemCount: (snapshot.data?.length ?? 0) - 1,
                   itemBuilder: (BuildContext context, int index) {
                     final product = snapshot.data![index + 1];
@@ -167,7 +152,7 @@ class AddNewCard extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: Color.fromRGBO(0, 0, 0, 0.25),

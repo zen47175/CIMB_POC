@@ -15,140 +15,54 @@ class NotiSettingMainScreen extends StatelessWidget {
       appBar: CustomAppBar(),
       body: Column(children: [
         const SizedBox(
-          height: 40,
+          height: 46, // 40 * 1.15
         ),
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 23), // 20 * 1.15
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
               'ตั้งค่าการเเจ้งเตือนผลิตภัณท์',
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: TextStyle(
+                  fontWeight: FontWeight.w600, fontSize: 17.25), // 15 * 1.15
             ),
           ),
         ),
-
-        // Padding(
-        //   padding: const EdgeInsets.only(left: 16),
-        //   child: Align(
-        //     alignment: Alignment.center,
-        //     child: Container(
-        //       height:
-        //           1.0, // H: 0 pt (A line height of 0 pt would be invisible, so we use 1 pt)
-        //       width: 316, // W: 316 pt
-        //       decoration: const BoxDecoration(
-        //         border: Border(
-        //           top: BorderSide(
-        //             width: 1.0, // Width: 1 pt
-        //             color: Color.fromRGBO(
-        //                 229, 229, 229, 1.0), // rgba 0.9, 0.9, 0.9, 1.0
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
         const SizedBox(
-          height: 24,
+          height: 27.6, // 24 * 1.15
         ),
         Container(
-          margin: const EdgeInsets.only(top: 0, left: 20.0),
-          // decoration: BoxDecoration(
-          //   border: Border.all(
-          //     color: const Color.fromRGBO(230, 230, 230, 1.0),
-          //     width: 1.0,
-          //   ),
-          // ),
+          margin: const EdgeInsets.only(top: 0, left: 23.0), // 20 * 1.15
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Image.asset(
                   'assets/images/cardMock.png'), // replace with your image asset
-              // Column(
-              //   mainAxisAlignment: MainAxisAlignment.center,
-              //   crossAxisAlignment: CrossAxisAlignment.start,
-              //   children: const [
-              //     Text(
-              //       'บัตรเครดิต CIMB',
-              //       style: TextStyle(
-              //         fontSize: 14.0, // replace with your font size
-              //         color: Colors.grey,
-              //         height:
-              //             1.4, // line height is usually defined as a multiplier of font size
-              //         letterSpacing: -0.2,
-              //       ),
-              //     ),
-              //      Text(
-              //       'xxxx-xxxx',
-              //       style: TextStyle(
-              //         fontSize: 14.0, // replace with your font size
-              //         color: Colors.grey,
-              //         height:
-              //             1.4, // line height is usually defined as a multiplier of font size
-              //         letterSpacing: -0.2,
-              //       ),
-              //     ),
-              //     const Text(
-              //       'บัตรหลัก',
-              //       style: TextStyle(
-              //         fontSize: 14.0, // replace with your font size
-              //         color: Colors.grey,
-              //         height:
-              //             1.4, // line height is usually defined as a multiplier of font size
-              //         letterSpacing: -0.2,
-              //       ),
-              //     ),
-              //   ],
-              // ),
-              //   Switch(
-              //     value: true, // replace with your boolean control variable
-              //     onChanged: (value) {
-              //       // handle switch state change
-              //     },
-              //   ),
             ],
           ),
         ),
         const SizedBox(
-          height: 24,
+          height: 27.6, // 24 * 1.15
         ),
-        // Padding(
-        //   padding: const EdgeInsets.only(left: 16),
-        //   child: Align(
-        //     alignment: Alignment.center,
-        //     child: Container(
-        //       height:
-        //           1.0, // H: 0 pt (A line height of 0 pt would be invisible, so we use 1 pt)
-        //       width: 316, // W: 316 pt
-        //       decoration: const BoxDecoration(
-        //         border: Border(
-        //           top: BorderSide(
-        //             width: 1.0, // Width: 1 pt
-        //             color: Color.fromRGBO(
-        //                 229, 229, 229, 1.0), // rgba 0.9, 0.9, 0.9, 1.0
-        //           ),
-        //         ),
-        //       ),
-        //     ),
-        //   ),
-        // ),
         const Padding(
-          padding: EdgeInsets.all(20),
+          padding: EdgeInsets.all(23), // 20 * 1.15
           child: Text(
-              '*กรุณาเพิ่มบัตรดครดิต CIMB Thai Debit ของคุณ เพื่อรับข้อความเเจ้งเตือน'),
+              '*กรุณาเพิ่มบัตรดครดิต CIMB Thai Debit ของคุณ เพื่อรับข้อความเเจ้งเตือน',
+              style: TextStyle(fontSize: 17.25) // 15 * 1.15
+              ),
         ),
         ElevatedButton(
           onPressed: () {
             Get.to(() => ServiceNotiSMS());
-            // Get.to(() => SmsCardSettingScreen());
           },
-          child: const Text('เพิ่มบัตร'),
+          child: const Text('เพิ่มบัตร',
+              style: TextStyle(fontSize: 17.25)), // 15 * 1.15
           style: ElevatedButton.styleFrom(
             primary: const Color.fromRGBO(
                 120, 0, 10, 1), // replace with actual color values
-            minimumSize: const Size(300, 36),
+            minimumSize: const Size(345, 41.4), // 300 * 1.15, 36 * 1.15
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8), // corner radius
+              borderRadius: BorderRadius.circular(9.2), // 8 * 1.15
             ),
           ),
         )

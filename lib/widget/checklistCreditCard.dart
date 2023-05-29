@@ -40,16 +40,22 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
+      padding: EdgeInsets.symmetric(
+        vertical: screenHeight * 0.024,
+        horizontal: screenWidth * 0.048,
+      ),
       child: Container(
-        width: 352,
-        height: 64.38,
+        width: screenWidth * 0.781,
+        height: screenHeight * 0.100,
         decoration: BoxDecoration(
           color: _selected
               ? Color.fromARGB(255, 249, 213, 211)
               : Colors.white, // changing color when selected
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(screenWidth * 0.032),
           border: Border.all(
             color: _selected
                 ? Colors.red
@@ -58,82 +64,99 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
             width: 1,
           ),
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.056),
         child: CheckboxListTile(
           value: _selected,
           onChanged: widget.isSelectable ? toggleSelection : null,
           controlAffinity:
               ListTileControlAffinity.leading, // puts the checkbox at the start
-          title: Row(
-            children: [
-              Container(
-                width: 57.11,
-                height: 35.3,
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("assets/images/Creditcard.png"),
-                    fit: BoxFit.fill,
+          title: Padding(
+            padding: const EdgeInsets.only(bottom: 15),
+            child: Row(
+              children: [
+                Container(
+                  width: screenWidth * 0.161,
+                  height: screenHeight * 0.050,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/images/Creditcard.png"),
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 10), // adjust as needed
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.cardName,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 8,
-                      height: 2.07,
-                    ),
-                  ),
-                  Text(
-                    widget.cardDetails,
-                    style: TextStyle(
+                SizedBox(width: screenWidth * 0.022), // adjust as needed
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.cardName,
+                      style: TextStyle(
                         color: Colors.black,
-                        fontSize: 8,
-                        height: 2.07,
-                        fontWeight: FontWeight.w800),
-                  ),
-                  Text(
-                    "บัตรหลัก",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 8,
-                      height: 2.07,
-                      fontWeight: FontWeight.w800,
+                        fontSize: screenWidth *
+                            0.021 *
+                            1.15, // Increased font size by 15%
+                        height: 1.2,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const Spacer(), // pushes the next child to the end
-              widget.isToggle
-                  ? CupertinoSwitch(
-                      value: _switchValue,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _switchValue = value;
-                        });
-                      },
-                      activeColor: Colors.black,
-                    )
-                  : Icon(
-                      Icons.more_vert, // replace with actual icon
-                      color: Colors.grey[300],
-                      size: 20,
+                    SizedBox(height: 2), // Add spacing between texts
+                    Text(
+                      widget.cardDetails,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: screenWidth *
+                            0.021 *
+                            1.15, // Increased font size by 15%
+                        height: 1.2,
+                        fontWeight: FontWeight.w800,
+                      ),
                     ),
-              widget.isToggle
-                  ? GestureDetector(
-                      onTap: widget.onTap,
-                      child: const Icon(
+                    SizedBox(height: 2), // Add spacing between texts
+                    Text(
+                      "บัตรหลัก",
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: screenWidth *
+                            0.021 *
+                            1.15, // Increased font size by 15%
+                        height: 1.2,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ],
+                ),
+                Spacer(), // pushes the next child to the end
+                widget.isToggle
+                    ? CupertinoSwitch(
+                        value: _switchValue,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _switchValue = value;
+                          });
+                        },
+                        activeColor: Colors.black,
+                      )
+                    : Icon(
                         Icons.more_vert, // replace with actual icon
-                        color: Color(0xFFD9D9D9),
-                        size: 20,
-                      ))
-                  : SizedBox()
-            ],
+                        color: Colors.grey[300],
+                        size: screenWidth *
+                            0.032 *
+                            1.15, // Increased icon size by 15%
+                      ),
+                widget.isToggle
+                    ? GestureDetector(
+                        onTap: widget.onTap,
+                        child: Icon(
+                          Icons.more_vert, // replace with actual icon
+                          color: const Color(0xFFD9D9D9),
+                          size: screenWidth *
+                              0.032 *
+                              1.15, // Increased icon size by 15%
+                        ))
+                    : SizedBox(),
+              ],
+            ),
           ),
         ),
       ),

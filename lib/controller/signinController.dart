@@ -23,7 +23,7 @@ class SigninController extends GetxController {
     idController.addListener(_validateInput);
     phoneController.addListener(_validateInput);
     _validateInput();
-    getLiffId();
+    // getLiffId();
 
     update();
   }
@@ -74,13 +74,12 @@ class SigninController extends GetxController {
       // If no user exists with the id or phone, then create a new one
       final ConfirmationResult confirmationResult =
           await _auth.signInWithPhoneNumber('+66${phoneController.text}');
-      String lineUID = await getLiffId();
-      print("LineUID assigned to: $lineUID");
+
       Get.to(() => OtpScreen(
             confirmationResult: confirmationResult,
             phoneValue: phoneController.text,
           ));
-
+      String lineUID = await getLiffId();
       // Create new user instance
 
       AppUser newUser = AppUser(
@@ -88,17 +87,17 @@ class SigninController extends GetxController {
         phone: phoneController.text,
         pincode: '',
         lineUID: lineUID,
-        notificationCenter: false,
+        notificationCenter: true,
         userProducts: [
           Product(
             productName: 'บัตรเครดิต CIMB Thai Credit Card',
             productDetails: '7733-38xx-xxxx-9080',
-            type: 'Credit',
+            type: 'CreditGold',
             toggles: [
-              Toggle(name: 'รายการใช้จ่าย', value: false),
-              Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: false),
-              Toggle(name: 'ถอนเงินสด', value: false),
-              Toggle(name: 'ชำระเงิน', value: false),
+              Toggle(name: 'รายการใช้จ่าย', value: true),
+              Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+              Toggle(name: 'ถอนเงินสด', value: true),
+              Toggle(name: 'ชำระเงิน', value: true),
             ],
             id: '1',
           ),
@@ -107,43 +106,43 @@ class SigninController extends GetxController {
             productDetails: '7733-38xx-xxxx-2243',
             type: 'Debit',
             toggles: [
-              Toggle(name: 'รายการใช้จ่าย', value: false),
-              Toggle(name: 'ฝากเงิน', value: false),
-              Toggle(name: 'ถอนเงิน', value: false),
-              Toggle(name: 'โอนเงิน', value: false),
-              Toggle(name: 'ชำระเงิน', value: false),
+              Toggle(name: 'รายการใช้จ่าย', value: true),
+              Toggle(name: 'ฝากเงิน', value: true),
+              Toggle(name: 'ถอนเงิน', value: true),
+              Toggle(name: 'โอนเงิน', value: true),
+              Toggle(name: 'ชำระเงิน', value: true),
             ],
             id: '2',
           ),
           Product(
             productName: 'บัตรเครดิต CIMB Thai Credit Card',
             productDetails: '7733-38xx-xxxx-9080',
-            type: 'Credit',
+            type: 'CreditSliver',
             toggles: [
-              Toggle(name: 'รายการใช้จ่าย', value: false),
-              Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: false),
-              Toggle(name: 'ถอดเงินสด', value: false),
-              Toggle(name: 'ชำระเงิน', value: false),
+              Toggle(name: 'รายการใช้จ่าย', value: true),
+              Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+              Toggle(name: 'ถอดเงินสด', value: true),
+              Toggle(name: 'ชำระเงิน', value: true),
             ],
             id: '3',
           ),
           Product(
             productName: 'สินเชื่อบ้าน',
             productDetails: 'xxxx-xxx-xxxx-xxxx',
-            type: 'Loan',
+            type: 'HomeLoan',
             toggles: [
-              Toggle(name: 'ครบกำหนดชำระ', value: false),
-              Toggle(name: 'ชำระค่างวด', value: false),
+              Toggle(name: 'ครบกำหนดชำระ', value: true),
+              Toggle(name: 'ชำระค่างวด', value: true),
             ],
             id: '4',
           ),
           Product(
-            productName: 'สินเชื่อรถ',
+            productName: 'สินเชื่อส่วนบุลคล',
             productDetails: 'xxxx-xxx-xxxx-xxxx',
-            type: 'Loan',
+            type: 'PersonalLoan',
             toggles: [
-              Toggle(name: 'ครบกำหนดชำระ', value: false),
-              Toggle(name: 'ชำระค่างวด', value: false),
+              Toggle(name: 'ครบกำหนดชำระ', value: true),
+              Toggle(name: 'ชำระค่างวด', value: true),
             ],
             id: '5',
           ),
@@ -151,10 +150,7 @@ class SigninController extends GetxController {
       );
 
       final User? firebaseUser = _auth.currentUser;
-      await _firestore
-          .collection('Users')
-          .doc(firebaseUser?.uid)
-          .set(newUser.toMap());
+      await _firestore.collection('Users').doc(lineUID).set(newUser.toMap());
     } else {
       // If a user exists with either the id or phone, show a popup
       showDialog(

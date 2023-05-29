@@ -1,7 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
@@ -25,7 +22,6 @@ class OtpScreen extends StatefulWidget {
 
 class _OtpScreenState extends State<OtpScreen> {
   final pinController = TextEditingController();
-
   final focusNode = FocusNode();
   late String phoneValue;
   final formKey = GlobalKey<FormState>();
@@ -39,7 +35,6 @@ class _OtpScreenState extends State<OtpScreen> {
     phoneValue = widget.phoneValue;
     pinController.addListener(() {
       if (pinController.text.length == 6) {
-        // assuming OTP length is 6
         setState(() {
           _isButtonDisabled = false;
         });
@@ -49,6 +44,14 @@ class _OtpScreenState extends State<OtpScreen> {
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    pinController.dispose();
+    focusNode.dispose();
+    super.dispose();
   }
 
   void _verifyOtp() async {
@@ -92,16 +95,18 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     final focusedBorderColor = const Color.fromRGBO(245, 245, 245, 1);
-    ;
     const fillColor = Color.fromRGBO(243, 246, 249, 0);
     const borderColor = Color.fromRGBO(23, 171, 144, 0.4);
 
     final defaultPinTheme = PinTheme(
-      width: 42,
-      height: 48,
-      textStyle: const TextStyle(
-        fontSize: 22,
+      width: 42 * 1.15,
+      height: 48 * 1.15,
+      textStyle: TextStyle(
+        fontSize: 22 * 1.15,
         color: Color.fromRGBO(30, 60, 87, 1),
       ),
       decoration: BoxDecoration(
@@ -109,34 +114,36 @@ class _OtpScreenState extends State<OtpScreen> {
         border: Border.all(color: borderColor),
       ),
     );
+
     return Scaffold(
       appBar: CustomAppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0 * 1.15),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            const Text(
+            Text(
               'ขอระบุ otp เพื่อยินยันตัวตน',
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 20 * 1.15),
             ),
-            const SizedBox(height: 10),
-            const Text(
+            SizedBox(height: 10 * 1.15),
+            Text(
               'รหัส otp 6 หลักถูกส่งไปที่',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16 * 1.15),
             ),
-            const SizedBox(height: 5),
+            SizedBox(height: 5 * 1.15),
             Text(
               phoneValue,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style:
+                  TextStyle(fontSize: 16 * 1.15, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 5),
-            const Text(
+            SizedBox(height: 5 * 1.15),
+            Text(
               'รหัสมีอายุการใช้งาน 30 วินาที',
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: 16 * 1.15),
             ),
-            const SizedBox(
-              height: 42,
+            SizedBox(
+              height: 42 * 1.15,
             ),
             Form(
               key: formKey,
@@ -154,9 +161,6 @@ class _OtpScreenState extends State<OtpScreen> {
                             AndroidSmsAutofillMethod.smsUserConsentApi,
                         listenForMultipleSmsOnAndroid: true,
                         defaultPinTheme: defaultPinTheme,
-                        validator: (value) {
-                          // return value == '2222' ? null : 'Pin is incorrect';
-                        },
                         hapticFeedbackType: HapticFeedbackType.lightImpact,
                         onCompleted: (pin) {
                           debugPrint('onCompleted: $pin');
@@ -168,9 +172,9 @@ class _OtpScreenState extends State<OtpScreen> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Container(
-                              margin: const EdgeInsets.only(bottom: 9),
-                              width: 22,
-                              height: 1,
+                              margin: EdgeInsets.only(bottom: 9 * 1.15),
+                              width: 22 * 1.15,
+                              height: 1 * 1.15,
                               color: focusedBorderColor,
                             ),
                           ],
@@ -181,8 +185,8 @@ class _OtpScreenState extends State<OtpScreen> {
                 ],
               ),
             ),
-            const SizedBox(
-              height: 60,
+            SizedBox(
+              height: 60 * 1.15,
             ),
             Center(
                 child: GestureDetector(
@@ -197,34 +201,32 @@ class _OtpScreenState extends State<OtpScreen> {
                     color: Colors.grey.withOpacity(0.5)),
               ),
             )),
-            const SizedBox(
-              height: 24,
+            SizedBox(
+              height: 24 * 1.15,
             ),
             ElevatedButton(
               onPressed: _isButtonDisabled
                   ? null
                   : () {
                       _verifyOtp();
-
                       print(_verifyOtp);
-                      // Get.to(() => AgreementAndPolicy());
                     },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF790009),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(45),
                 ),
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                padding: EdgeInsets.symmetric(
+                    vertical: 12 * 1.15, horizontal: 16 * 1.15),
               ),
-              child: const SizedBox(
-                width: 342,
-                height: 28,
+              child: SizedBox(
+                width: screenWidth * 0.9,
+                height: 28 * 1.15,
                 child: Center(
                   child: Text(
                     'ยืนยัน',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 16 * 1.15,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
