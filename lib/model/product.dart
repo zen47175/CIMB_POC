@@ -6,6 +6,7 @@ class Product {
   final String productDetails;
   final String type;
   final List<Toggle> toggles;
+  bool selected; // Adding the 'selected' field
 
   Product({
     required this.id, // And this
@@ -13,6 +14,7 @@ class Product {
     required this.productDetails,
     required this.type,
     required this.toggles,
+    this.selected = false, // Set default value for 'selected'
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +24,7 @@ class Product {
       'productDetails': productDetails,
       'type': type,
       'toggles': toggles.map((toggle) => toggle.toMap()).toList(),
+      'selected': selected, // Add this
     };
   }
 
@@ -44,6 +47,7 @@ class Product {
               ?.map((toggle) => Toggle.fromMap(toggle as Map<String, dynamic>?))
               .toList() ??
           [],
+      selected: map['selected'] ?? false, // Add this
     );
   }
 }

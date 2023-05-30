@@ -1,28 +1,18 @@
 import 'dart:developer';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_line_liff/flutter_line_liff.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:poc_cimb/controller/addNewCardController.dart';
-import 'package:poc_cimb/controller/productController.dart';
-
 import 'package:poc_cimb/firebase_options.dart';
 import 'package:poc_cimb/model/authen.dart';
-import 'package:poc_cimb/screen/addNewCard.dart';
-import 'package:poc_cimb/screen/notificationSettingScreen.dart';
-import 'package:poc_cimb/screen/registerScreen/agreementAndPolicyScreen.dart';
-import 'package:poc_cimb/screen/registerScreen/notiSetting.dart';
-import 'package:poc_cimb/screen/registerScreen/otpScreen.dart';
 import 'package:poc_cimb/screen/registerScreen/signinScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:poc_cimb/screen/smsSettingScreen.dart';
-
-import 'controller/SmsCardSettingController.dart';
-import 'screen/smsCardSettingScreen.dart';
 
 Future<void> initializeApp() async {
   String LineID = '1661241096-NAzwM1wp';
@@ -73,7 +63,18 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       builder: EasyLoading.init(),
-      home: SigninScreen(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator(); // Show a loading spinner while waiting for user authentication status
+          } else if (snapshot.hasData) {
+            return SmsSettingScreen(); // Show SmsSettingScreen if user is logged in
+          } else {
+            return SigninScreen(); // Show SigninScreen if user is not logged in
+          }
+        },
+      ),
       initialRoute: '/',
       // routes: {
       //   'home': (context) => isSignedIn ? SigninScreen() : SmsSettingScreen(),

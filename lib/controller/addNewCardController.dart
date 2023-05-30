@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../model/user.dart';
 
@@ -12,6 +13,8 @@ class AddNewCardController extends GetxController {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
   final _user = Rx<AppUser?>(null);
+  RxList<Map<String, dynamic>> confirmedProducts =
+      RxList<Map<String, dynamic>>();
 
   final _isLoading = true.obs;
   AppUser? get user => _user.value;
@@ -34,6 +37,30 @@ class AddNewCardController extends GetxController {
       }
     } else {
       throw Exception('User does not exist');
+    }
+  }
+
+  Future<int> getSelectedProductsCount() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    final usersRef = FirebaseFirestore.instance.collection('Users');
+
+    if (firebaseUser != null) {
+      final userDoc = await usersRef.doc(firebaseUser.uid).get();
+      final userData = userDoc.data();
+
+      if (userData != null) {
+        final userProducts =
+            List<Map<String, dynamic>>.from(userData['userProducts']);
+
+        final selectedProductsCount =
+            userProducts.where((product) => product['selected'] == true).length;
+
+        return selectedProductsCount;
+      } else {
+        throw Exception('No user data found');
+      }
+    } else {
+      throw Exception('No user signed in');
     }
   }
 
@@ -96,7 +123,7 @@ class AddNewCardController extends GetxController {
     }
   }
 
-  void _getUserData() async {
+  void getUserDataFromSelected() async {
     final User? firebaseUser = _auth.currentUser;
     print(firebaseUser?.phoneNumber.toString());
     if (firebaseUser != null) {
@@ -105,9 +132,17 @@ class AddNewCardController extends GetxController {
 
         print('User Products: ${user.userProducts}');
 
-        // Initialize unselectedProducts with userProducts
-        unselectedProducts.assignAll(List<Map<String, dynamic>>.from(
-            user.userProducts.map((product) => product.toMap())));
+        // // Initialize unselectedProducts and selectedProducts based on userProducts
+        unselectedProducts.assignAll(
+            List<Map<String, dynamic>>.from(user.userProducts.map((product) {
+          if (product.selected) {
+            // check if product.selected is null, if it is, treat it as false
+            selectedProducts.add(product.toMap());
+          } else {
+            unselectedProducts.add(product.toMap());
+          }
+          return product.toMap();
+        })));
 
         _user.value = user;
         _isLoading.value = false;
@@ -121,22 +156,104 @@ class AddNewCardController extends GetxController {
     }
   }
 
-  void addToSelectedProducts(Map<String, dynamic> product) {
-    selectedProducts.add(product);
+  Future<void> addToSelectedProducts(Map<String, dynamic> product) async {
+    product['selected'] = true;
+
+    // Remove the product from unselectedProducts if it exists
     unselectedProducts.removeWhere((p) => p == product);
+
+    // Check if the product is already in selectedProducts
+    if (!selectedProducts.contains(product)) {
+      selectedProducts.add(product);
+    }
+
+    // Update Firestore
+    await updateFirestore();
+
     update();
+  }
+
+  Future<void> updateFirestore() async {
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    final usersRef = FirebaseFirestore.instance.collection('Users');
+
+    if (firebaseUser != null) {
+      final userDoc = await usersRef.doc(firebaseUser.uid).get();
+      final userData = userDoc.data();
+
+      if (userData != null) {
+        // Assuming userProducts is a list of maps
+        final userProducts =
+            List<Map<String, dynamic>>.from(userData['userProducts']);
+
+        final updatedProducts = userProducts.map((product) {
+          // If the product is in selectedProducts, return a new product with 'selected' set to true
+          if (selectedProducts.any(
+              (selectedProduct) => selectedProduct['id'] == product['id'])) {
+            return {
+              ...product,
+              'selected': true,
+            };
+          } else {
+            return {
+              ...product,
+              'selected': false,
+            };
+          }
+        }).toList();
+
+        await usersRef.doc(firebaseUser.uid).update({
+          'userProducts': updatedProducts,
+        });
+      } else {
+        throw Exception('No user data found');
+      }
+    } else {
+      throw Exception('No user signed in');
+    }
   }
 
   void removeFromSelectedProducts(Map<String, dynamic> product) {
     selectedProducts.removeWhere((p) => p == product);
+    product['selected'] = false;
     unselectedProducts.add(product);
     update();
+  }
+
+  Future<void> loadSelectedProducts() async {
+    final prefs = await SharedPreferences.getInstance();
+    final selectedProductsData = prefs.getString('selectedProducts');
+    if (selectedProductsData != null) {
+      final selectedProductsList = List<Map<String, dynamic>>.from(
+        selectedProductsData
+            .replaceAll('[', '')
+            .replaceAll(']', '')
+            .split('},')
+            .map((productData) => {
+                  ...productData.split(',').map((kv) => kv.split(':')).fold({},
+                      (acc, entry) {
+                    acc[entry[0].trim().replaceAll('{', '')] = entry[1].trim();
+                    return acc;
+                  }),
+                }),
+      );
+      selectedProducts.assignAll(selectedProductsList);
+    }
+  }
+
+  void initSelectedProducts(List<Map<String, dynamic>> products) {
+    for (var product in products) {
+      addToSelectedProducts(product);
+    }
   }
 
   @override
   void onInit() {
     super.onInit();
-    _getUserData();
+    getUserDataFromSelected();
+    loadSelectedProducts();
+
+    update();
   }
 
   @override

@@ -8,13 +8,14 @@ class CreditCard extends StatefulWidget {
   final String cardName;
   final String cardDetails;
   final List<Map<String, dynamic>> toggles;
-  final String productId; // Add this
+  final String productId;
+
   const CreditCard({
     Key? key,
     required this.cardName,
     required this.cardDetails,
     required this.toggles,
-    required this.productId, // And this
+    required this.productId,
   }) : super(key: key);
 
   @override
@@ -22,7 +23,7 @@ class CreditCard extends StatefulWidget {
 }
 
 class _CreditCardState extends State<CreditCard> {
-  final AddNewCardController _controller = Get.find(); // Add this
+  final AddNewCardController _controller = Get.find();
   bool _isExpanded = false;
   bool _switchValue = false;
 
@@ -38,12 +39,12 @@ class _CreditCardState extends State<CreditCard> {
         ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
             return Container(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 18),
+              padding: EdgeInsets.symmetric(vertical: 23.0, horizontal: 20.7),
               child: Row(
                 children: [
                   Container(
-                    width: 57.11,
-                    height: 35.3,
+                    width: 65.68,
+                    height: 40.6,
                     decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage("assets/images/Creditcard.png"),
@@ -51,35 +52,35 @@ class _CreditCardState extends State<CreditCard> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: 11.5),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         widget.cardName,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.black,
-                          fontSize: 8,
-                          height: 2.07,
+                          fontSize: 14,
+                          height: 2.38,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
                       Text(
                         widget.cardDetails,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.black,
-                          fontSize: 8,
-                          height: 2.07,
+                          fontSize: 14,
+                          height: 2.38,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      const Text(
+                      Text(
                         "บัตรหลัก",
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 8,
-                          height: 2.07,
+                          fontSize: 9.2,
+                          height: 2.38,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -87,7 +88,7 @@ class _CreditCardState extends State<CreditCard> {
                   ),
                   const Spacer(),
                   SizedBox(
-                    width: 10,
+                    width: 11.5,
                   ),
                 ],
               ),
@@ -101,14 +102,23 @@ class _CreditCardState extends State<CreditCard> {
                   itemBuilder: (BuildContext context, int index) {
                     final toggle = widget.toggles[index];
                     return ListTile(
-                      title: Text(toggle['name']),
+                      title: Text(toggle['name'],
+                          style: TextStyle(
+                              fontSize:
+                                  13.8)), // assuming the default fontSize for ListTile title is 12
                       trailing: CupertinoSwitch(
                         value: toggle['value'],
-                        onChanged: (bool value) {
-                          _controller.updateToggle(widget.productId,
-                              toggle['name'], value); // Add this
+                        onChanged: (bool value) async {
+                          toggle['value'] = value;
+
+                          await _controller.updateToggle(
+                            widget.productId,
+                            toggle['name'],
+                            value,
+                          );
+
                           setState(() {
-                            toggle['value'] = value;
+                            // Update the widget state
                           });
                         },
                       ),

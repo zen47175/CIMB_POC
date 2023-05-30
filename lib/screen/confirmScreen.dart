@@ -7,10 +7,10 @@ import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:get/get.dart';
 
 class ConfirmScreen extends StatelessWidget {
-  final List<Map<String, dynamic>> selectedProducts;
+  // final List<Map<String, dynamic>> selectedProducts;
 
-  const ConfirmScreen({Key? key, required this.selectedProducts})
-      : super(key: key);
+  // const ConfirmScreen({Key? key, required this.selectedProducts})
+  //     : super(key: key);
 
   @override
   Widget build(BuildContext context) {

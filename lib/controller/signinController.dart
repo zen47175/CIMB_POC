@@ -84,15 +84,15 @@ class SigninController extends GetxController {
             confirmationResult: confirmationResult,
             phoneValue: phoneController.text,
           ));
-      String lineUID = await getLiffId();
-      // Create new user instance
-
+      // String lineUID = await getLiffId();
+      // // Create new user instance
+      // print(lineUID);
       try {
         AppUser newUser = AppUser(
           id: idController.text,
           phone: phoneController.text,
           pincode: '',
-          lineUID: lineUID,
+          lineUID: 'Ua810f2b3b1db579a8543750bce83053e',
           notificationCenter: true,
           userProducts: [
             Product(
@@ -106,6 +106,7 @@ class SigninController extends GetxController {
                 Toggle(name: 'ชำระเงิน', value: true),
               ],
               id: '1',
+              selected: false,
             ),
             Product(
               productName: 'บัตรเดบิต CIMB Thai Debit Card',
@@ -119,10 +120,11 @@ class SigninController extends GetxController {
                 Toggle(name: 'ชำระเงิน', value: true),
               ],
               id: '2',
+              selected: false,
             ),
             Product(
               productName: 'บัตรเครดิต CIMB Thai Credit Card',
-              productDetails: '7733-38xx-xxxx-9080',
+              productDetails: '7733-38xx-xxxx-2852',
               type: 'CreditSliver',
               toggles: [
                 Toggle(name: 'รายการใช้จ่าย', value: true),
@@ -131,6 +133,7 @@ class SigninController extends GetxController {
                 Toggle(name: 'ชำระเงิน', value: true),
               ],
               id: '3',
+              selected: false,
             ),
             Product(
               productName: 'สินเชื่อบ้าน',
@@ -141,16 +144,18 @@ class SigninController extends GetxController {
                 Toggle(name: 'ชำระค่างวด', value: true),
               ],
               id: '4',
+              selected: false,
             ),
             Product(
               productName: 'สินเชื่อส่วนบุลคล',
               productDetails: 'xxxx-xxx-xxxx-xxxx',
-              type: 'Personal',
+              type: 'PersonalLoan',
               toggles: [
                 Toggle(name: 'ครบกำหนดชำระ', value: true),
                 Toggle(name: 'ชำระค่างวด', value: true),
               ],
               id: '5',
+              selected: false,
             ),
           ],
         );

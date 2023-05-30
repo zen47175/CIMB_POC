@@ -42,13 +42,13 @@ class AddNewCard extends StatelessWidget {
             height: screenHeight * 0.03,
           ),
           DecoratedBox(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromRGBO(51, 55, 57, 0.1),
             ),
             child: Padding(
               padding: EdgeInsets.all(screenWidth * 0.02),
               child: Text(
-                'บัตรเครดิต',
+                'ผลิตภัณท์หลัก',
                 style: TextStyle(
                   fontFamily: 'Inter',
                   fontWeight: FontWeight.w500,
@@ -63,15 +63,21 @@ class AddNewCard extends StatelessWidget {
             builder: (BuildContext context,
                 AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                // make sure there is data and at least one product
-                if (snapshot.data != null && snapshot.data!.isNotEmpty) {
-                  final product = snapshot.data![0];
+                // Filter the snapshot data
+                final unselectedProducts = snapshot.data
+                        ?.where((product) => product['selected'] != true)
+                        .toList() ??
+                    [];
+
+                // Check if there's any unselected product
+                if (unselectedProducts.isNotEmpty) {
+                  final product = unselectedProducts[0];
                   return CheckListCreditCard(
                     isSelectable: true,
                     isToggle: false,
@@ -88,7 +94,7 @@ class AddNewCard extends StatelessWidget {
                   );
                 } else {
                   // return a widget or some kind of message when there is no product data
-                  return Text('No products found');
+                  return const SizedBox();
                 }
               }
             },
@@ -97,7 +103,7 @@ class AddNewCard extends StatelessWidget {
             height: screenHeight * 0.04,
           ),
           DecoratedBox(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Color.fromRGBO(51, 55, 57, 0.1),
             ),
             child: Padding(
@@ -118,18 +124,28 @@ class AddNewCard extends StatelessWidget {
             builder: (BuildContext context,
                 AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
+                // Filter the snapshot data
+                final unselectedProducts = snapshot.data
+                        ?.where((product) => product['selected'] != true)
+                        .toList() ??
+                    [];
+
                 return ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: (snapshot.data?.length ?? 0) - 1,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: unselectedProducts.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final product = snapshot.data![index + 1];
+                    if (index == 0) {
+                      return Container(); // return an empty container for the first item
+                    }
+
+                    final product = unselectedProducts[index];
                     return CheckListCreditCard(
                       isSelectable: true,
                       isToggle: false,
@@ -152,7 +168,7 @@ class AddNewCard extends StatelessWidget {
         ],
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: Color.fromRGBO(0, 0, 0, 0.25),
@@ -167,10 +183,12 @@ class AddNewCard extends StatelessWidget {
           onConfirmButtonPressed: () {
             signIn();
 
-            Get.to(() => ConfirmScreen(
-                  selectedProducts: addNewCardController.selectedProducts,
-                ));
-            print(addNewCardController.selectedProducts);
+            addNewCardController.confirmedProducts
+                .assignAll(addNewCardController.selectedProducts);
+
+            Get.to(() => ConfirmScreen());
+
+            print(addNewCardController.confirmedProducts);
             // addNewCardController.selectedProducts.clear();
           },
         ),

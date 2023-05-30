@@ -31,13 +31,13 @@ class CustomBottomBar extends StatelessWidget {
                   width: 170,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.07),
+                    color: Colors.white.withOpacity(0.07),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
                     child: Text(
-                      'เพิ่ม',
-                      style: TextStyle(color: Colors.black),
+                      '',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
