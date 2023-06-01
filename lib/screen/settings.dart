@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
+import 'package:poc_cimb/controller/signinController.dart';
 import 'package:poc_cimb/screen/addNewCard.dart';
 import 'package:poc_cimb/screen/registerScreen/signinScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
@@ -59,7 +60,7 @@ class SettingsScreen extends StatelessWidget {
               // ),
               const SizedBox(height: 20),
               const Text(
-                'บริการ KKP Line connect',
+                'บริการ CIMB Line connect',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               ListTile(
@@ -81,7 +82,9 @@ class SettingsScreen extends StatelessWidget {
                             child: const Text('ยืนยัน'),
                             onPressed: () {
                               Navigator.of(context).pop();
-                              Get.to(() => SigninScreen());
+                              Get.find<SigninController>().deleteUser();
+                              Get.off(() => SigninScreen());
+                              Get.find<SigninController>().closeLiffApp();
                             },
                           ),
                           TextButton(

@@ -10,7 +10,7 @@ import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:poc_cimb/widget/customField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:flutter_line_liff/flutter_line_liff.dart';
 import '../model/product.dart';
 import '../model/toggle.dart';
 
@@ -31,6 +31,29 @@ class SigninController extends GetxController {
     // getLiffId();
 
     update();
+  }
+
+  void deleteUser() async {
+    try {
+      // Deleting the user from FirebaseAuth
+      await _auth.currentUser!.delete();
+
+      // Deleting the user from Firestore
+      await _firestore.collection('Users').doc(_auth.currentUser!.uid).delete();
+
+      // Showing a message after deletion
+      Get.snackbar('Success', 'User deleted successfully',
+          snackPosition: SnackPosition.BOTTOM);
+    } catch (e) {
+      // Show error message
+      Get.snackbar('Error', 'Failed to delete user',
+          snackPosition: SnackPosition.BOTTOM);
+      print(e);
+    }
+  }
+
+  void closeLiffApp() {
+    FlutterLineLiff().closeWindow();
   }
 
   void _validateInput() {
@@ -63,17 +86,17 @@ class SigninController extends GetxController {
 
   void requestOtp() async {
     // Check if a user with the same id or phone already exists
-    // final QuerySnapshot idResult = await _firestore
-    //     .collection('Users')
-    //     .where('id', isEqualTo: idController.text)
-    //     .get();
+    final QuerySnapshot idResult = await _firestore
+        .collection('Users')
+        .where('id', isEqualTo: idController.text)
+        .get();
 
-    // final QuerySnapshot phoneResult = await _firestore
-    //     .collection('Users')
-    //     .where('phone', isEqualTo: phoneController.text)
-    //     .get();
+    final QuerySnapshot phoneResult = await _firestore
+        .collection('Users')
+        .where('phone', isEqualTo: phoneController.text)
+        .get();
 
-    // if (idResult.docs.isEmpty && phoneResult.docs.isEmpty)
+    if (idResult.docs.isEmpty && phoneResult.docs.isEmpty)
     //TODO don't forget to uncode check id
     if (isValidInput.value) {
       // If no user exists with the id or phone, then create a new one
@@ -100,7 +123,7 @@ class SigninController extends GetxController {
               productDetails: '7733-38xx-xxxx-9080',
               type: 'CreditGold',
               toggles: [
-                Toggle(name: 'รายการใช้จ่าย', value: true),
+                // Toggle(name: 'รายการใช้จ่าย', value: true),
                 Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
                 Toggle(name: 'ถอนเงินสด', value: true),
                 Toggle(name: 'ชำระเงิน', value: true),
@@ -113,7 +136,7 @@ class SigninController extends GetxController {
               productDetails: '7733-38xx-xxxx-2243',
               type: 'Debit',
               toggles: [
-                Toggle(name: 'รายการใช้จ่าย', value: true),
+                // Toggle(name: 'รายการใช้จ่าย', value: true),
                 Toggle(name: 'ฝากเงิน', value: true),
                 Toggle(name: 'ถอนเงิน', value: true),
                 Toggle(name: 'โอนเงิน', value: true),
