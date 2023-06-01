@@ -9,8 +9,6 @@ import 'package:poc_cimb/widget/customField.dart';
 
 class SigninScreen extends StatelessWidget {
   final SigninController _controller = Get.put(SigninController());
-  // final AddNewCardController addNewCardController =
-  //     Get.put(AddNewCardController());
 
   SigninScreen({super.key});
 
