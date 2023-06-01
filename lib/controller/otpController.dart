@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_line_liff/flutter_line_liff.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -208,6 +209,17 @@ class OtpController extends GetxController {
     }
   }
 
+  Future<String> getLiffId() async {
+    String userId = '';
+    await FlutterLineLiff().ready.then((_) async {
+      final Profile profile = await FlutterLineLiff().profile;
+      userId = profile.userId;
+      print(
+          "Line User ID: $userId"); // This will print the LINE User ID to the console.
+    });
+    return userId;
+  }
+
   void createUser() async {
     // Check if a user with the same id or phone already exists
     // final QuerySnapshot idResult = await _firestore
@@ -227,15 +239,15 @@ class OtpController extends GetxController {
       // final ConfirmationResult confirmationResult =
       //     await _auth.signInWithPhoneNumber('+66${phoneController.text}');
 
-      // String lineUID = await getLiffId();
-      // // Create new user instance
+      String lineUID = await getLiffId();
+      // Create new user instance
       // print(lineUID);
       try {
         AppUser newUser = AppUser(
           id: idController.text,
           phone: phoneController.text,
           pincode: '',
-          lineUID: 'Ua810f2b3b1db579a8543750bce83053e',
+          lineUID: lineUID,
           notificationCenter: true,
           userProducts: [
             Product(
