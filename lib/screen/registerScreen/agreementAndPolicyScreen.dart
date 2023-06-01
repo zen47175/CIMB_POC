@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:poc_cimb/controller/otpController.dart';
 import 'package:poc_cimb/screen/registerScreen/notiSetting.dart';
 import 'package:poc_cimb/screen/smsSettingScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
@@ -65,6 +66,8 @@ class _AgreementAndPolicyState extends State<AgreementAndPolicy> {
             child: ElevatedButton(
               onPressed: _isChecked
                   ? () {
+                      OtpController otpController = Get.put(OtpController());
+                      otpController.createUser();
                       Get.to(() => const NotiSettingMainScreen());
                     }
                   : null,

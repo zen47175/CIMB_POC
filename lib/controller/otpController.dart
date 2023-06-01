@@ -1,8 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:poc_cimb/model/product.dart';
+import 'package:poc_cimb/model/toggle.dart';
+import 'package:poc_cimb/model/user.dart';
 import 'package:poc_cimb/screen/registerScreen/agreementAndPolicyScreen.dart';
+
+import '../screen/registerScreen/otpScreen.dart';
 
 class OtpController extends GetxController {
   final pinController = TextEditingController();
@@ -11,7 +17,13 @@ class OtpController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   RxBool isButtonDisabled = true.obs;
   String phoneValue = '';
-  ConfirmationResult? confirmationResult;
+  // ConfirmationResult? confirmationResult;
+  final TextEditingController idController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  late ConfirmationResult confirmationResult;
+  final _firestore = FirebaseFirestore.instance;
+
+  final RxBool isValidInput = true.obs;
 
   @override
   void onInit() {
@@ -30,6 +42,10 @@ class OtpController extends GetxController {
     }
   }
 
+  void setConfirmationResult(ConfirmationResult result) {
+    confirmationResult = result;
+  }
+
   void updatePhoneValue(String value) {
     phoneValue = value;
   }
@@ -38,9 +54,11 @@ class OtpController extends GetxController {
     confirmationResult = result;
   }
 
-  void verifyOtp() async {
+  Future<void> verifyOtp() async {
     try {
       EasyLoading.show(status: 'Verifying OTP...');
+      ConfirmationResult confirmationResult =
+          Get.find<OtpController>().confirmationResult;
       await confirmationResult!.confirm(pinController.text);
       print(pinController.text);
       EasyLoading.dismiss();
@@ -54,10 +72,127 @@ class OtpController extends GetxController {
           isDismissible: true,
           colorText: Colors.white,
           maxWidth: Get.width * 0.9);
+      // if (isValidInput.value) {
+      // If no user exists with the id or phone, then create a new one
 
-      await Future.delayed(const Duration(seconds: 2));
+      // String lineUID = await getLiffId();
+      // // Create new user instance
+      // print(lineUID);
+      //   try {
+      //     AppUser newUser = AppUser(
+      //       id: idController.text,
+      //       phone: phoneController.text,
+      //       pincode: '',
+      //       lineUID: '',
+      //       notificationCenter: true,
+      //       userProducts: [
+      //         Product(
+      //           productName: 'บัตรเครดิต CIMB Thai Credit Card',
+      //           productDetails: '7733-38xx-xxxx-9080',
+      //           type: 'CreditGold',
+      //           toggles: [
+      //             // Toggle(name: 'รายการใช้จ่าย', value: true),
+      //             Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+      //             Toggle(name: 'ถอนเงินสด', value: true),
+      //             Toggle(name: 'ชำระเงิน', value: true),
+      //           ],
+      //           id: '1',
+      //           selected: false,
+      //         ),
+      //         Product(
+      //           productName: 'บัตรเดบิต CIMB Thai Debit Card',
+      //           productDetails: '7733-38xx-xxxx-2243',
+      //           type: 'Debit',
+      //           toggles: [
+      //             // Toggle(name: 'รายการใช้จ่าย', value: true),
+      //             Toggle(name: 'ฝากเงิน', value: true),
+      //             Toggle(name: 'ถอนเงิน', value: true),
+      //             Toggle(name: 'โอนเงิน', value: true),
+      //             Toggle(name: 'ชำระเงิน', value: true),
+      //           ],
+      //           id: '2',
+      //           selected: false,
+      //         ),
+      //         Product(
+      //           productName: 'บัตรเครดิต CIMB Thai Credit Card',
+      //           productDetails: '7733-38xx-xxxx-2852',
+      //           type: 'CreditSliver',
+      //           toggles: [
+      //             Toggle(name: 'รายการใช้จ่าย', value: true),
+      //             Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+      //             Toggle(name: 'ถอดเงินสด', value: true),
+      //             Toggle(name: 'ชำระเงิน', value: true),
+      //           ],
+      //           id: '3',
+      //           selected: false,
+      //         ),
+      //         Product(
+      //           productName: 'สินเชื่อบ้าน',
+      //           productDetails: 'xxxx-xxx-xxxx-xxxx',
+      //           type: 'HomeLoan',
+      //           toggles: [
+      //             Toggle(name: 'ครบกำหนดชำระ', value: true),
+      //             Toggle(name: 'ชำระค่างวด', value: true),
+      //           ],
+      //           id: '4',
+      //           selected: false,
+      //         ),
+      //         Product(
+      //           productName: 'สินเชื่อส่วนบุลคล',
+      //           productDetails: 'xxxx-xxx-xxxx-xxxx',
+      //           type: 'PersonalLoan',
+      //           toggles: [
+      //             Toggle(name: 'ครบกำหนดชำระ', value: true),
+      //             Toggle(name: 'ชำระค่างวด', value: true),
+      //           ],
+      //           id: '5',
+      //           selected: false,
+      //         ),
+      //       ],
+      //     );
 
+      //     final User? firebaseUser = _auth.currentUser;
+      //     await _firestore
+      //         .collection('Users')
+      //         .doc(firebaseUser?.uid)
+      //         .set(newUser.toMap());
+
+      //     // DocumentSnapshot result =
+      //     //     await _firestore.collection('Users').doc(firebaseUser?.uid).get();
+      //     await Future.delayed(const Duration(seconds: 2));
+
+      //     print(firebaseUser?.uid);
       Get.to(() => AgreementAndPolicy());
+      //     // if (result.exists) {
+      //     //   print(result);
+      //     // } else {
+      //     //   print("No data found");
+      //     // }
+      //   } on FirebaseException catch (e) {
+      //     print(e);
+      //     print(e.message);
+      //   }
+      // } else {
+      //   // If a user exists with either the id or phone, show a popup
+      //   final User? firebaseUser = _auth.currentUser;
+      //   print(firebaseUser?.uid);
+      //   showDialog(
+      //     context: Get.context!,
+      //     builder: (context) => AlertDialog(
+      //       title: const Text('Error'),
+      //       content: const Text(
+      //           'A user with this ID or phone number already exists.'),
+      //       actions: <Widget>[
+      //         TextButton(
+      //           child: const Text('OK'),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         ),
+      //       ],
+      //     ),
+      //   );
+      // }
     } catch (e) {
       EasyLoading.dismiss();
 
@@ -70,6 +205,141 @@ class OtpController extends GetxController {
           isDismissible: true,
           colorText: Colors.white,
           maxWidth: Get.width * 0.9);
+    }
+  }
+
+  void createUser() async {
+    // Check if a user with the same id or phone already exists
+    // final QuerySnapshot idResult = await _firestore
+    //     .collection('Users')
+    //     .where('id', isEqualTo: idController.text)
+    //     .get();
+
+    // final QuerySnapshot phoneResult = await _firestore
+    //     .collection('Users')
+    //     .where('phone', isEqualTo: phoneController.text)
+    //     .get();
+
+    // if (idResult.docs.isEmpty && phoneResult.docs.isEmpty)
+    //TODO don't forget to uncode check id
+    if (isValidInput.value) {
+      // If no user exists with the id or phone, then create a new one
+      // final ConfirmationResult confirmationResult =
+      //     await _auth.signInWithPhoneNumber('+66${phoneController.text}');
+
+      // String lineUID = await getLiffId();
+      // // Create new user instance
+      // print(lineUID);
+      try {
+        AppUser newUser = AppUser(
+          id: idController.text,
+          phone: phoneController.text,
+          pincode: '',
+          lineUID: 'Ua810f2b3b1db579a8543750bce83053e',
+          notificationCenter: true,
+          userProducts: [
+            Product(
+              productName: 'บัตรเครดิต CIMB Thai Credit Card',
+              productDetails: '7733-38xx-xxxx-9080',
+              type: 'CreditGold',
+              toggles: [
+                // Toggle(name: 'รายการใช้จ่าย', value: true),
+                Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+                Toggle(name: 'ถอนเงินสด', value: true),
+                Toggle(name: 'ชำระเงิน', value: true),
+              ],
+              id: '1',
+              selected: false,
+            ),
+            Product(
+              productName: 'บัตรเดบิต CIMB Thai Debit Card',
+              productDetails: '7733-38xx-xxxx-2243',
+              type: 'Debit',
+              toggles: [
+                // Toggle(name: 'รายการใช้จ่าย', value: true),
+                Toggle(name: 'ฝากเงิน', value: true),
+                Toggle(name: 'ถอนเงิน', value: true),
+                Toggle(name: 'โอนเงิน', value: true),
+                Toggle(name: 'ชำระเงิน', value: true),
+              ],
+              id: '2',
+              selected: false,
+            ),
+            Product(
+              productName: 'บัตรเครดิต CIMB Thai Credit Card',
+              productDetails: '7733-38xx-xxxx-2852',
+              type: 'CreditSliver',
+              toggles: [
+                Toggle(name: 'รายการใช้จ่าย', value: true),
+                Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+                Toggle(name: 'ถอดเงินสด', value: true),
+                Toggle(name: 'ชำระเงิน', value: true),
+              ],
+              id: '3',
+              selected: false,
+            ),
+            Product(
+              productName: 'สินเชื่อบ้าน',
+              productDetails: 'xxxx-xxx-xxxx-xxxx',
+              type: 'HomeLoan',
+              toggles: [
+                Toggle(name: 'ครบกำหนดชำระ', value: true),
+                Toggle(name: 'ชำระค่างวด', value: true),
+              ],
+              id: '4',
+              selected: false,
+            ),
+            Product(
+              productName: 'สินเชื่อส่วนบุลคล',
+              productDetails: 'xxxx-xxx-xxxx-xxxx',
+              type: 'PersonalLoan',
+              toggles: [
+                Toggle(name: 'ครบกำหนดชำระ', value: true),
+                Toggle(name: 'ชำระค่างวด', value: true),
+              ],
+              id: '5',
+              selected: false,
+            ),
+          ],
+        );
+
+        final User? firebaseUser = _auth.currentUser;
+        await _firestore
+            .collection('Users')
+            .doc(firebaseUser?.uid)
+            .set(newUser.toMap());
+
+        DocumentSnapshot result =
+            await _firestore.collection('Users').doc(firebaseUser?.uid).get();
+        if (result.exists) {
+          print(result);
+        } else {
+          print("No data found");
+        }
+      } on FirebaseException catch (e) {
+        print(e);
+        print(e.message);
+      }
+    } else {
+      // If a user exists with either the id or phone, show a popup
+      final User? firebaseUser = _auth.currentUser;
+      print(firebaseUser?.uid);
+      // showDialog(
+      //   context: Get.context!,
+      //   builder: (context) => AlertDialog(
+      //     title: const Text('Error'),
+      //     content:
+      //         const Text('A user with this ID or phone number already exists.'),
+      //     actions: <Widget>[
+      //       TextButton(
+      //         child: const Text('OK'),
+      //         onPressed: () {
+      //           Navigator.of(context).pop();
+      //         },
+      //       ),
+      //     ],
+      //   ),
+      // );
     }
   }
 

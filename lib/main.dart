@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
         builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const CircularProgressIndicator(); // Show a loading spinner while waiting for user authentication status
-          } else if (snapshot.hasData) {
+          } else if (snapshot.hasData && isSignedIn) {
             return SmsSettingScreen(); // Show SmsSettingScreen if user is logged in
           } else {
             return SigninScreen(); // Show SigninScreen if user is not logged in

@@ -8,20 +8,20 @@ import 'package:poc_cimb/widget/countdown.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 
 class OtpScreen extends StatelessWidget {
-  final ConfirmationResult confirmationResult;
-  final String phoneValue;
+  // final ConfirmationResult confirmationResult;
+  // final String phoneValue;
 
   const OtpScreen({
     Key? key,
-    required this.confirmationResult,
-    required this.phoneValue,
+    // required this.confirmationResult,
+    // required this.phoneValue,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final otpController = Get.put(OtpController());
-    otpController.updatePhoneValue(phoneValue);
-    otpController.updateConfirmationResult(confirmationResult);
+    final OtpController otpController = Get.put(OtpController());
+    otpController.updatePhoneValue(otpController.phoneValue);
+    // otpController.updateConfirmationResult(confirmationResult);
     // otpController.phoneValue.value;
     // otpController.confirmationResult;
 
@@ -129,7 +129,11 @@ class OtpScreen extends StatelessWidget {
             Obx(() => ElevatedButton(
                   onPressed: otpController.isButtonDisabled.value
                       ? null
-                      : otpController.verifyOtp,
+                      : (() async {
+                          await otpController
+                              .verifyOtp(); // Wait for verifyOtp to complete
+                          // otpController.createUser();
+                        }),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF790009),
                     shape: RoundedRectangleBorder(

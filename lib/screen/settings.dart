@@ -13,6 +13,8 @@ import 'package:poc_cimb/screen/addNewCard.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 
 class SettingsScreen extends StatelessWidget {
+  final SigninController controller = Get.put(SigninController());
+
   Future<void> _launchURL() async {
     const url =
         'https://www.cimbthai.com/th/personal/home.html'; // replace with the website URL
@@ -82,9 +84,9 @@ class SettingsScreen extends StatelessWidget {
                             child: const Text('ยืนยัน'),
                             onPressed: () {
                               Navigator.of(context).pop();
-                              Get.find<SigninController>().deleteUser();
+                              controller.deleteUser();
                               Get.off(() => SigninScreen());
-                              Get.find<SigninController>().closeLiffApp();
+                              controller.closeLiffApp();
                             },
                           ),
                           TextButton(

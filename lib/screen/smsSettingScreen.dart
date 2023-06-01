@@ -96,13 +96,13 @@ class SmsSettingScreen extends StatelessWidget {
                 color: const Color.fromRGBO(229, 229, 229, 1),
               ),
               const SizedBox(height: 40),
-              ConfirmButton(
-                mainText: 'เพิ่มบัตร',
-                onPressed: () {
-                  Get.to(() => AddNewCard());
-                },
-                size: ConfirmButtonSize.full,
-              ),
+              // ConfirmButton(
+              //   mainText: 'เพิ่มบัตร',
+              //   onPressed: () {
+              //     Get.to(() => AddNewCard());
+              //   },
+              //   size: ConfirmButtonSize.full,
+              // ),
             ],
           ),
         ),
