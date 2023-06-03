@@ -21,6 +21,7 @@ class OtpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final OtpController otpController = Get.put(OtpController());
     otpController.updatePhoneValue(otpController.phoneValue);
+    final SigninController signinController = Get.find();
     // otpController.updateConfirmationResult(confirmationResult);
     // otpController.phoneValue.value;
     // otpController.confirmationResult;
@@ -63,7 +64,7 @@ class OtpScreen extends StatelessWidget {
             ),
             const SizedBox(height: 5 * 1.15),
             Text(
-              otpController.phoneValue,
+              signinController.phoneController.text,
               style: const TextStyle(
                   fontSize: 16 * 1.15, fontWeight: FontWeight.bold),
             ),

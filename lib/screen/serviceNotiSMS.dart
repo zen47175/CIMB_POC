@@ -41,9 +41,31 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
   Future<void> _firstFieldListener() async {
     if (_controller.text.length == 4) {
       EasyLoading.show(status: 'Checking number...');
-      await Future.delayed(Duration(seconds: 1)); // wait for 1 second
-      EasyLoading.dismiss();
+      final User? firebaseUser = _auth.currentUser;
+      final userDoc = _firestore.collection('Users').doc(firebaseUser?.uid);
+      final userDocSnapshot = await userDoc.get();
 
+      if (userDocSnapshot.exists) {
+        // Make updates to the existing user data
+        final userData = userDocSnapshot.data() as Map<String, dynamic>;
+        userData['pincode'] = _secondController.text; // Update the pin code
+
+        final userProducts = userData['userProducts'] as List<dynamic>;
+        if (userProducts.isNotEmpty) {
+          final firstProduct = userProducts.first;
+          if (firstProduct is Map<String, dynamic>) {
+            firstProduct['productDetails'] =
+                '7733-38xx-xxxx-${_controller.text}';
+          }
+        }
+
+        // Save the updated user data back to Firestore
+        await userDoc.set(userData);
+      }
+      await Future.delayed(Duration(seconds: 1)); // wait for 1 second
+
+      EasyLoading.dismiss();
+      Get.to(() => SmsCardSettingScreen());
       setState(() {
         _showNewFormField = true;
       });
@@ -84,7 +106,7 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
           final firstProduct = userProducts.first;
           if (firstProduct is Map<String, dynamic>) {
             firstProduct['productDetails'] =
-                '7733-38xx-xxxx-${_controller.text}';
+                '7733-3832-1322-${_controller.text}';
           }
         }
 
@@ -125,7 +147,7 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
               physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
                 RadioListTile(
-                  title: const Text('บัตรเครดิต'),
+                  title: const Text('บัตรเดบิต'),
                   value: 1,
                   groupValue: _value,
                   onChanged: (int? value) {
@@ -138,7 +160,7 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 44),
                     child: CustomFormField(
-                      hintText: 'กรุณากรอกเลขบัตรเครดิต 4 ตัวท้ายของคุณ',
+                      hintText: 'กรุณากรอกเลขบัตรเคบิต 4 ตัวท้ายของคุณ',
                       controller: _controller,
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[
@@ -170,20 +192,20 @@ class _ServiceNotiSMSState extends State<ServiceNotiSMS> {
                 SizedBox(
                   height: 40,
                 ),
-                if (_showNewFormField)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 44),
-                    child: CustomFormField(
-                      hintText: 'สร้างรหัสผ่านรหัสของคุณ',
-                      controller: _secondController,
-                      focusNode: _secondFocusNode,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: <TextInputFormatter>[
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(4)
-                      ],
-                    ),
-                  ),
+                // if (_showNewFormField)
+                //   Padding(
+                //     padding: const EdgeInsets.symmetric(horizontal: 44),
+                //     child: CustomFormField(
+                //       hintText: 'สร้างรหัสผ่านรหัสของคุณ',
+                //       controller: _secondController,
+                //       focusNode: _secondFocusNode,
+                //       keyboardType: TextInputType.number,
+                //       inputFormatters: <TextInputFormatter>[
+                //         FilteringTextInputFormatter.digitsOnly,
+                //         LengthLimitingTextInputFormatter(4)
+                //       ],
+                //     ),
+                //   ),
               ],
             ),
           ],

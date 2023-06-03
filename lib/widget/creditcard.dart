@@ -9,6 +9,7 @@ class CreditCard extends StatefulWidget {
   final String cardDetails;
   final List<Map<String, dynamic>> toggles;
   final String productId;
+  final String cardImage;
 
   const CreditCard({
     Key? key,
@@ -16,6 +17,7 @@ class CreditCard extends StatefulWidget {
     required this.cardDetails,
     required this.toggles,
     required this.productId,
+    required this.cardImage,
   }) : super(key: key);
 
   @override
@@ -29,6 +31,8 @@ class _CreditCardState extends State<CreditCard> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
     return ExpansionPanelList(
       expansionCallback: (int index, bool isExpanded) {
         setState(() {
@@ -39,16 +43,17 @@ class _CreditCardState extends State<CreditCard> {
         ExpansionPanel(
           headerBuilder: (BuildContext context, bool isExpanded) {
             return Container(
-              padding: EdgeInsets.symmetric(vertical: 23.0, horizontal: 20.7),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 23.0, horizontal: 20.7),
               child: Row(
                 children: [
                   Container(
-                    width: 65.68,
-                    height: 40.6,
-                    decoration: const BoxDecoration(
+                    width: screenWidth * 0.141,
+                    height: screenHeight * 0.090,
+                    decoration: BoxDecoration(
                       image: DecorationImage(
-                        image: AssetImage("assets/images/Creditcard.png"),
-                        fit: BoxFit.fill,
+                        image: NetworkImage(widget.cardImage),
+                        fit: BoxFit.contain,
                       ),
                     ),
                   ),
@@ -59,7 +64,7 @@ class _CreditCardState extends State<CreditCard> {
                     children: [
                       Text(
                         widget.cardName,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 14,
                           height: 2.38,
@@ -68,14 +73,14 @@ class _CreditCardState extends State<CreditCard> {
                       ),
                       Text(
                         widget.cardDetails,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black,
                           fontSize: 14,
                           height: 2.38,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      Text(
+                      const Text(
                         "บัตรหลัก",
                         style: TextStyle(
                           color: Colors.grey,
@@ -87,7 +92,7 @@ class _CreditCardState extends State<CreditCard> {
                     ],
                   ),
                   const Spacer(),
-                  SizedBox(
+                  const SizedBox(
                     width: 11.5,
                   ),
                 ],
@@ -97,13 +102,13 @@ class _CreditCardState extends State<CreditCard> {
           body: _isExpanded
               ? ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: widget.toggles.length,
                   itemBuilder: (BuildContext context, int index) {
                     final toggle = widget.toggles[index];
                     return ListTile(
                       title: Text(toggle['name'],
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize:
                                   13.8)), // assuming the default fontSize for ListTile title is 12
                       trailing: CupertinoSwitch(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/instance_manager.dart';
 import 'package:poc_cimb/controller/signinController.dart';
 import 'package:poc_cimb/screen/addNewCard.dart';
+import 'package:poc_cimb/screen/agreementshow.dart';
 import 'package:poc_cimb/screen/registerScreen/signinScreen.dart';
 import 'package:poc_cimb/widget/customAppbar.dart';
 import 'package:get/get.dart';
@@ -66,9 +67,10 @@ class SettingsScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               ListTile(
-                title: const Text('ข้อตกลงและเงื่อนไขการใช้บริการ'),
-                onTap: _launchURL,
-              ),
+                  title: const Text('ข้อตกลงและเงื่อนไขการใช้บริการ'),
+                  onTap: () {
+                    Get.to(() => AgreementAndPolicyShow());
+                  }),
               ListTile(
                 title: const Text('ยกเลิกบริการ CIMB Line connect'),
                 onTap: () {
@@ -83,10 +85,10 @@ class SettingsScreen extends StatelessWidget {
                           TextButton(
                             child: const Text('ยืนยัน'),
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              // Navigator.of(context).pop();
                               controller.deleteUser();
                               Get.off(() => SigninScreen());
-                              controller.closeLiffApp();
+                              // controller.closeLiffApp();
                             },
                           ),
                           TextButton(

@@ -37,18 +37,27 @@ class SigninController extends GetxController {
 
   void deleteUser() async {
     try {
-      // Deleting the user from FirebaseAuth
-      await _auth.currentUser!.delete();
+      // Get the user's UID
+      String? uid = _auth.currentUser?.uid;
 
-      // Deleting the user from Firestore
-      await _firestore.collection('Users').doc(_auth.currentUser!.uid).delete();
+      if (uid != null) {
+        // Deleting the user from FirebaseAuth
+        await _auth.currentUser!.delete();
 
-      // Showing a message after deletion
-      Get.snackbar('Success', 'User deleted successfully',
-          snackPosition: SnackPosition.BOTTOM);
+        // Deleting the user from Firestore
+        await _firestore.collection('Users').doc(uid).delete();
+
+        // Showing a message after deletion
+        Get.snackbar('Success', 'User deleted successfully',
+            snackPosition: SnackPosition.BOTTOM);
+      } else {
+        // If the user is not signed in, show an error
+        Get.snackbar('Error', 'You are not signed in',
+            snackPosition: SnackPosition.BOTTOM);
+      }
     } catch (e) {
       // Show error message
-      Get.snackbar('Success', 'User deleted successfully',
+      Get.snackbar('Error', 'Failed to delete user',
           snackPosition: SnackPosition.BOTTOM);
       print(e);
     }

@@ -4,6 +4,7 @@ import 'package:flutter_line_liff/flutter_line_liff.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:poc_cimb/controller/signinController.dart';
 import 'package:poc_cimb/model/product.dart';
 import 'package:poc_cimb/model/toggle.dart';
 import 'package:poc_cimb/model/user.dart';
@@ -23,7 +24,7 @@ class OtpController extends GetxController {
   final TextEditingController phoneController = TextEditingController();
   late ConfirmationResult confirmationResult;
   final _firestore = FirebaseFirestore.instance;
-
+  SigninController signinController = Get.find();
   final RxBool isValidInput = true.obs;
 
   @override
@@ -244,72 +245,93 @@ class OtpController extends GetxController {
       // print(lineUID);
       try {
         AppUser newUser = AppUser(
-          id: idController.text,
-          phone: phoneController.text,
+          id: signinController.idController.text,
+          phone: signinController.phoneController.text,
           pincode: '',
           lineUID: lineUID,
+          // lineUID: 'Ua810f2b3b1db579a8543750bce83053e',
           notificationCenter: true,
           userProducts: [
+            // Product(
+            //   productName: 'บัตรเครดิต CIMB Thai Credit Card',
+            //   productDetails: '7733-3812-xxxx-9080',
+            //   type: 'CreditGold',
+            //   toggles: [
+            //     // Toggle(name: 'รายการใช้จ่าย', value: true),
+            //     Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+            //     Toggle(name: 'ถอนเงินสด', value: true),
+            //     Toggle(name: 'ชำระเงิน', value: true),
+            //   ],
+            //   id: '1',
+            //   selected: false,
+            // ),
             Product(
-              productName: 'บัตรเครดิต CIMB Thai Credit Card',
-              productDetails: '7733-38xx-xxxx-9080',
-              type: 'CreditGold',
+              productName: 'บัตรเดบิต CIMB Thai Debit Card',
+              productDetails: '7733-3845-1234-2243',
+              imageUrl:
+                  'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Credit_or_Debit_Card_Flat_Icon_Vector.svg/2048px-Credit_or_Debit_Card_Flat_Icon_Vector.svg.png',
+              type: 'Debit',
               toggles: [
                 // Toggle(name: 'รายการใช้จ่าย', value: true),
-                Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
-                Toggle(name: 'ถอนเงินสด', value: true),
-                Toggle(name: 'ชำระเงิน', value: true),
+                Toggle(name: 'ถอนเงิน', value: true),
+                Toggle(name: 'โอนเงิน ', value: true),
+                Toggle(name: 'รายการใช้จ่าย', value: true),
+                Toggle(name: 'ยกเลิกรายการใช้จ่าย ', value: true),
               ],
               id: '1',
               selected: false,
             ),
             Product(
-              productName: 'บัตรเดบิต CIMB Thai Debit Card',
-              productDetails: '7733-38xx-xxxx-2243',
-              type: 'Debit',
+              productName: 'บัญชีเงินฝาก',
+              productDetails: '4532-4311-2323-2341',
+              type: 'BankAccount',
+              imageUrl:
+                  'https://cdn-icons-png.flaticon.com/512/6963/6963703.png',
               toggles: [
-                // Toggle(name: 'รายการใช้จ่าย', value: true),
+                // Toggle(name: 'ครบกำหนดชำระ', value: true),
                 Toggle(name: 'ฝากเงิน', value: true),
                 Toggle(name: 'ถอนเงิน', value: true),
-                Toggle(name: 'โอนเงิน', value: true),
-                Toggle(name: 'ชำระเงิน', value: true),
               ],
               id: '2',
               selected: false,
             ),
+            // Product(
+            //   productName: 'บัตรเครดิต CIMB Thai Credit Card',
+            //   productDetails: '7733-38xx-xxxx-2852',
+            //   type: 'CreditSliver',
+            //   toggles: [
+            //     Toggle(name: 'รายการใช้จ่าย', value: true),
+            //     Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
+            //     Toggle(name: 'ถอดเงินสด', value: true),
+            //     Toggle(name: 'ชำระเงิน', value: true),
+            //   ],
+            //   id: '3',
+            //   selected: false,
+            // ),
             Product(
-              productName: 'บัตรเครดิต CIMB Thai Credit Card',
-              productDetails: '7733-38xx-xxxx-2852',
-              type: 'CreditSliver',
+              productName: 'สินเชื่อบ้าน',
+              productDetails: '2341-1234-5452-5315',
+              type: 'HomeLoan',
+              imageUrl:
+                  'https://cdn-icons-png.flaticon.com/128/6676/6676703.png',
               toggles: [
-                Toggle(name: 'รายการใช้จ่าย', value: true),
-                Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
-                Toggle(name: 'ถอดเงินสด', value: true),
-                Toggle(name: 'ชำระเงิน', value: true),
+                // Toggle(name: 'ครบกำหนดชำระ', value: true),
+                Toggle(name: 'ชำระค่างวด', value: true),
               ],
               id: '3',
               selected: false,
             ),
             Product(
-              productName: 'สินเชื่อบ้าน',
-              productDetails: 'xxxx-xxx-xxxx-xxxx',
-              type: 'HomeLoan',
+              productName: 'สินเชื่อส่วนบุลคล',
+              productDetails: '4532-4311-2323-2341',
+              type: 'PersonalLoan',
+              imageUrl:
+                  'https://static.vecteezy.com/system/resources/previews/005/911/349/original/dollar-icon-man-for-your-web-site-logo-app-ui-design-free-vector.jpg',
               toggles: [
-                Toggle(name: 'ครบกำหนดชำระ', value: true),
+                // Toggle(name: 'ครบกำหนดชำระ', value: true),
                 Toggle(name: 'ชำระค่างวด', value: true),
               ],
               id: '4',
-              selected: false,
-            ),
-            Product(
-              productName: 'สินเชื่อส่วนบุลคล',
-              productDetails: 'xxxx-xxx-xxxx-xxxx',
-              type: 'PersonalLoan',
-              toggles: [
-                Toggle(name: 'ครบกำหนดชำระ', value: true),
-                Toggle(name: 'ชำระค่างวด', value: true),
-              ],
-              id: '5',
               selected: false,
             ),
           ],

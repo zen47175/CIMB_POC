@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:poc_cimb/firebase_options.dart';
 import 'package:poc_cimb/model/authen.dart';
+import 'package:poc_cimb/screen/addNewCard.dart';
 import 'package:poc_cimb/screen/registerScreen/signinScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 

@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 class CheckListCreditCard extends StatefulWidget {
   final bool isToggle;
   final bool isSelectable; // Added new field to control selectability
-
+  final String cardImage;
   final String cardName; // New parameter for card name
   final String cardDetails; // New parameter for card details
   final VoidCallback? onTap;
+  final bool isSelected; // New parameter for initial selection state
   final ValueChanged<bool>
       onSelected; // New named parameter for selection callback
   const CheckListCreditCard({
@@ -17,7 +18,9 @@ class CheckListCreditCard extends StatefulWidget {
     required this.cardName,
     required this.cardDetails,
     required this.onSelected,
-    this.onTap, // Added onSelected parameter
+    required this.cardImage,
+    this.onTap,
+    required this.isSelected, // Added onSelected parameter
   }) : super(key: key);
 
   @override
@@ -26,8 +29,8 @@ class CheckListCreditCard extends StatefulWidget {
 
 class _CheckListCreditCardState extends State<CheckListCreditCard> {
   bool _switchValue = false;
-  bool _selected = false; // to manage selected/unselected state
-
+  // bool _selected = false; // to manage selected/unselected state
+  late bool _selected;
   void toggleSelection(bool? newValue) {
     if (widget.isSelectable) {
       setState(() {
@@ -36,6 +39,12 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
             _selected); // Call the onSelected callback with the selected state
       });
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.isSelected; // Initialize _selected here
   }
 
   @override
@@ -75,12 +84,12 @@ class _CheckListCreditCardState extends State<CheckListCreditCard> {
             child: Row(
               children: [
                 Container(
-                  width: screenWidth * 0.161,
-                  height: screenHeight * 0.050,
-                  decoration: const BoxDecoration(
+                  width: screenWidth * 0.141,
+                  height: screenHeight * 0.190,
+                  decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage("assets/images/Creditcard.png"),
-                      fit: BoxFit.fill,
+                      image: NetworkImage(widget.cardImage),
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),

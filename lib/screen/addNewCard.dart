@@ -70,19 +70,22 @@ class AddNewCard extends StatelessWidget {
                 return Text('Error: ${snapshot.error}');
               } else {
                 // Filter the snapshot data
-                final unselectedProducts = snapshot.data
-                        ?.where((product) => product['selected'] != true)
-                        .toList() ??
-                    [];
+                // final unselectedProducts = snapshot.data
+                //         ?.where((product) => product['selected'] != true)
+                //         .toList() ??
+                //     [];
+                final products = snapshot.data ?? [];
 
                 // Check if there's any unselected product
-                if (unselectedProducts.isNotEmpty) {
-                  final product = unselectedProducts[0];
+                if (products.isNotEmpty) {
+                  final product = products[0];
                   return CheckListCreditCard(
                     isSelectable: true,
                     isToggle: false,
+                    isSelected: product['selected'],
                     cardName: product['productName'],
                     cardDetails: product['productDetails'],
+                    cardImage: product['imageUrl'],
                     onSelected: (isSelected) {
                       if (isSelected) {
                         addNewCardController.addToSelectedProducts(product);
@@ -131,26 +134,29 @@ class AddNewCard extends StatelessWidget {
                 return Text('Error: ${snapshot.error}');
               } else {
                 // Filter the snapshot data
-                final unselectedProducts = snapshot.data
-                        ?.where((product) => product['selected'] != true)
-                        .toList() ??
-                    [];
+                // final unselectedProducts = snapshot.data
+                //         ?.where((product) => product['selected'] != true)
+                //         .toList() ??
+                //     [];
+                final products = snapshot.data ?? [];
 
                 return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: unselectedProducts.length,
+                  itemCount: products.length,
                   itemBuilder: (BuildContext context, int index) {
                     if (index == 0) {
                       return Container(); // return an empty container for the first item
                     }
 
-                    final product = unselectedProducts[index];
+                    final product = products[index];
                     return CheckListCreditCard(
                       isSelectable: true,
                       isToggle: false,
+                      isSelected: product['selected'],
                       cardName: product['productName'],
                       cardDetails: product['productDetails'],
+                      cardImage: product['imageUrl'],
                       onSelected: (isSelected) {
                         if (isSelected) {
                           addNewCardController.addToSelectedProducts(product);
@@ -183,8 +189,10 @@ class AddNewCard extends StatelessWidget {
           onConfirmButtonPressed: () {
             signIn();
 
+            // addNewCardController.confirmedProducts
+            //     .assignAll(addNewCardController.selectedProducts);
             addNewCardController.confirmedProducts
-                .assignAll(addNewCardController.selectedProducts);
+                .assignAll(addNewCardController.unselectedProducts);
 
             Get.to(() => ConfirmScreen());
 

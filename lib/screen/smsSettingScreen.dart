@@ -39,7 +39,7 @@ class SmsSettingScreen extends StatelessWidget {
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
-                        icon: Icon(Icons.settings),
+                        icon: const Icon(Icons.settings),
                         onPressed: () {
                           Get.to((() => SettingsScreen()));
                         },
@@ -59,7 +59,7 @@ class SmsSettingScreen extends StatelessWidget {
                 builder: (BuildContext context,
                     AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(); // Show a loading spinner while waiting for data
+                    return const CircularProgressIndicator(); // Show a loading spinner while waiting for data
                   } else {
                     if (snapshot.hasError) {
                       return Text(
@@ -77,11 +77,12 @@ class SmsSettingScreen extends StatelessWidget {
                           final product = selectedProducts[index];
                           print('Product: $product');
                           return CreditCard(
+                            cardImage: product['imageUrl'],
                             cardName: product['productName'] ?? '',
                             cardDetails: product['productDetails'] ?? '',
-                            toggles: product['toggles'] != null
+                            toggles: product['transactionType'] != null
                                 ? List<Map<String, dynamic>>.from(
-                                    product['toggles'])
+                                    product['transactionType'])
                                 : [],
                             productId: product['id'] ?? '',
                           );

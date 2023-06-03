@@ -7,14 +7,15 @@ class Product {
   final String type;
   final List<Toggle> toggles;
   bool selected; // Adding the 'selected' field
-
+  final String imageUrl; // New field
   Product({
-    required this.id, // And this
+    required this.id,
     required this.productName,
     required this.productDetails,
     required this.type,
     required this.toggles,
-    this.selected = false, // Set default value for 'selected'
+    this.selected = false,
+    required this.imageUrl, // New field
   });
 
   Map<String, dynamic> toMap() {
@@ -23,8 +24,9 @@ class Product {
       'productName': productName,
       'productDetails': productDetails,
       'type': type,
-      'toggles': toggles.map((toggle) => toggle.toMap()).toList(),
+      'transactionType': toggles.map((toggle) => toggle.toMap()).toList(),
       'selected': selected, // Add this
+      'imageUrl': imageUrl, // New field
     };
   }
 
@@ -33,7 +35,7 @@ class Product {
       throw ArgumentError('map cannot be null');
     }
 
-    var togglesList = map['toggles'];
+    var togglesList = map['transactionType'];
     if (togglesList != null && togglesList is! List<dynamic>) {
       throw ArgumentError('toggles must be a List');
     }
@@ -48,6 +50,7 @@ class Product {
               .toList() ??
           [],
       selected: map['selected'] ?? false, // Add this
+      imageUrl: map['imageUrl'] ?? '', // New field
     );
   }
 }

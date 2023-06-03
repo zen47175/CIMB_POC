@@ -64,6 +64,11 @@ class AddNewCardController extends GetxController {
     }
   }
 
+  bool isProductSelected(Map<String, dynamic> product) {
+    // It checks if the product is in the selectedProducts list
+    return selectedProducts.contains(product);
+  }
+
   Future<AppUser> getUserData(String uid) async {
     final User? firebaseUser = _auth.currentUser;
     DocumentSnapshot userDoc =
@@ -96,7 +101,8 @@ class AddNewCardController extends GetxController {
           }
 
           // Assuming toggles is a list of maps
-          final toggles = List<Map<String, dynamic>>.from(product['toggles']);
+          final toggles =
+              List<Map<String, dynamic>>.from(product['transactionType']);
 
           final updatedToggles = toggles.map((toggle) {
             if (toggle['name'] != toggleName) {
@@ -108,7 +114,7 @@ class AddNewCardController extends GetxController {
 
           return {
             ...product,
-            'toggles': updatedToggles,
+            'transactionType': updatedToggles,
           };
         }).toList();
 
@@ -123,26 +129,29 @@ class AddNewCardController extends GetxController {
     }
   }
 
-  void getUserDataFromSelected() async {
+  Future<void> getUserDataFromSelected() async {
     final User? firebaseUser = _auth.currentUser;
-    print(firebaseUser?.phoneNumber.toString());
+
     if (firebaseUser != null) {
       try {
         AppUser user = await getUserData(firebaseUser.uid);
 
         print('User Products: ${user.userProducts}');
 
-        // // Initialize unselectedProducts and selectedProducts based on userProducts
-        unselectedProducts.assignAll(
-            List<Map<String, dynamic>>.from(user.userProducts.map((product) {
-          if (product.selected) {
-            // check if product.selected is null, if it is, treat it as false
+        // Initialize unselectedProducts and selectedProducts based on userProducts
+        selectedProducts.clear();
+        unselectedProducts.clear();
+
+        user.userProducts.forEach((product) {
+          // Note the use of dot notation to access 'selected'
+          if (product.selected == true) {
+            // Convert the 'Product' object to a Map and add to 'selectedProducts'
             selectedProducts.add(product.toMap());
           } else {
+            // Convert the 'Product' object to a Map and add to 'unselectedProducts'
             unselectedProducts.add(product.toMap());
           }
-          return product.toMap();
-        })));
+        });
 
         _user.value = user;
         _isLoading.value = false;
@@ -171,6 +180,25 @@ class AddNewCardController extends GetxController {
     await updateFirestore();
 
     update();
+  }
+
+  Future<void> removeFromSelectedProducts(Map<String, dynamic> product) async {
+    try {
+      product['selected'] = false;
+
+      selectedProducts.removeWhere((p) => p['id'] == product['id']);
+
+      if (!unselectedProducts.any((p) => p['id'] == product['id'])) {
+        unselectedProducts.add(product);
+      }
+
+      // Update Firestore
+      await updateFirestore();
+
+      update();
+    } catch (e) {
+      print('Error in removeFromSelectedProducts: $e');
+    }
   }
 
   Future<void> updateFirestore() async {
@@ -211,13 +239,6 @@ class AddNewCardController extends GetxController {
     } else {
       throw Exception('No user signed in');
     }
-  }
-
-  void removeFromSelectedProducts(Map<String, dynamic> product) {
-    selectedProducts.removeWhere((p) => p == product);
-    product['selected'] = false;
-    unselectedProducts.add(product);
-    update();
   }
 
   Future<void> loadSelectedProducts() async {
