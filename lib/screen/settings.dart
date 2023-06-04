@@ -50,7 +50,7 @@ class SettingsScreen extends StatelessWidget {
                 text: 'ตั้งค่า',
               ),
               ListTile(
-                title: const Text('เพิ่มผลิตภัณฑ์'),
+                title: const Text('เพิ่ม/ลบผลิตภัณฑ์'),
                 onTap: () {
                   Get.to(() => AddNewCard());
                 },

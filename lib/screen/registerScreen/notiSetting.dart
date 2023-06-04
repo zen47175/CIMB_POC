@@ -47,7 +47,7 @@ class NotiSettingMainScreen extends StatelessWidget {
         const Padding(
           padding: EdgeInsets.all(23), // 20 * 1.15
           child: Text(
-              '*กรุณาเพิ่มบัตรเดบิต CIMB Thai Debit ของคุณเพื่อรับข้อความเเจ้งเตือน',
+              '*กรุณาเพิ่มบัตรเดบิต CIMB Thai Debit หรือ Bank Account ของคุณเพื่อรับข้อความเเจ้งเตือน',
               style: TextStyle(fontSize: 17.25) // 15 * 1.15
               ),
         ),

@@ -269,14 +269,14 @@ class OtpController extends GetxController {
               productName: 'บัตรเดบิต CIMB Thai Debit Card',
               productDetails: '7733-3845-1234-2243',
               imageUrl:
-                  'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Credit_or_Debit_Card_Flat_Icon_Vector.svg/2048px-Credit_or_Debit_Card_Flat_Icon_Vector.svg.png',
+                  'https://cdn-icons-png.flaticon.com/512/6963/6963703.png',
               type: 'Debit',
               toggles: [
                 // Toggle(name: 'รายการใช้จ่าย', value: true),
                 Toggle(name: 'ถอนเงิน', value: true),
-                Toggle(name: 'โอนเงิน ', value: true),
+                Toggle(name: 'โอนเงิน', value: true),
                 Toggle(name: 'รายการใช้จ่าย', value: true),
-                Toggle(name: 'ยกเลิกรายการใช้จ่าย ', value: true),
+                Toggle(name: 'ยกเลิกรายการใช้จ่าย', value: true),
               ],
               id: '1',
               selected: false,
@@ -286,7 +286,7 @@ class OtpController extends GetxController {
               productDetails: '4532-4311-2323-2341',
               type: 'BankAccount',
               imageUrl:
-                  'https://cdn-icons-png.flaticon.com/512/6963/6963703.png',
+                  'https://cdn-icons-png.flaticon.com/512/2721/2721031.png',
               toggles: [
                 // Toggle(name: 'ครบกำหนดชำระ', value: true),
                 Toggle(name: 'ฝากเงิน', value: true),
